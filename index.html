@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang=en><head><meta charset=utf-8>
+<link rel=stylesheet href=style.css>
+<meta name=viewport content="width=device-width">
+<title>Tellor</title>
+<script defer src=scripts.js></script>
+</head><body>
+
+<div class=head>
+  <button class=menuBtn onclick="document.body.classList.toggle('menu-closed')">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" stroke-width="2"><path d="M0,2 H20 M0,10 H20 M0,18 H20"></path></svg>
+  </button>
+  <h1>Tellor</h1>
+  <select id=boardsSelect onchange=changeBoard(this.value)>
+    <option value="">Boards</option>
+  </select>
+</div>
+
+<div class=menu id=menu>
+  <button onclick=route('newBoard')>New Board</button>
+  <button onclick=route('editBoard')>Edit Current Board</button>
+  <button onclick=route('importExport')>Import / Export</button>
+
+  <div class=yourBoardsHeader>Boards:</div>
+  <div id=boards></div>
+</div>
+
+<div class=main id=main ondragover=dragOver(event)></div>
+
+<!-- Popups -->
+<div id=popupBG onclick="if(event.target===this)route('home');">
+
+<!-- New Board -->
+<div id=newBoardBox>
+  <h2>New Board</h2>
+  <div class=popupBody>
+    Board Name <input type=text maxlength=127 id=newBoardName placeholder="Board Name" onkeyup="if(event.key === 'Enter') newBoard()"><br><br>
+    BG Img URL <input type=text maxlength=1023 id=newbgimgurl placeholder="Background Img URL" onkeyup="if(event.key === 'Enter') newBoard()"><br><br>
+  </div>
+  <div class=bottomBtnsBar>
+    <button onclick=route('home')>Cancel</button><button id=createBoardBtn onclick=newBoard()>Create</button>
+  </div>
+</div>
+
+<!-- Edit Board -->
+<div id=editBoardBox>
+  <h2>Edit Board</h2>
+  <div class=popupBody>
+    Board Name <input type=text maxlength=127 id=boardName placeholder="Board Name" onkeyup="if(event.key === 'Enter') editBoard()"><br><br>
+    BG Img URL <input type=text maxlength=1023 id=bgimgurl placeholder="Background Img URL" onkeyup="if(event.key === 'Enter') editBoard()"><br><br>
+    <input type=checkbox id=delChk onchange=route('deleteBoard')><label for=delChk>Delete Board</label><br>
+  </div>
+  <div class=bottomBtnsBar>
+    <button onclick=route('home')>Cancel</button><button id=delBoardBtn onclick=deleteBoard()>Delete</button><button id=saveBoardBtn onclick=editBoard()>Save</button>
+  </div>
+</div>
+
+<!-- Import / Export -->
+<div id=importExportBox>
+  <h2>Import / Export</h2>
+  <div class=popupBody>
+    Import board JSON from Tellor or Trello as new board<br><br>
+    <input type=file onchange=importBoard() id=importFile><br>
+    <span id=loader></span><br>
+    Export current board as JSON. Only compatible with Tellor
+  </div>
+  <div class=bottomBtnsBar>
+    <button onclick=route('home')>Cancel</button><button onclick=exportBoard()>Export</button>
+  </div>
+</div>
+
+<!-- View Card Details -->
+<div class=viewCardBox id=viewCardBox>
+  <div class=cardTitle maxlength=1023 id=cardTitle contenteditable=true autocorrect=off spellcheck=false onblur=saveCard()></div>
+  Tags<br>
+  <div id=tagsBox><button id=addTagBtn onclick=showTags()>+</button></div>
+  <div id=addTagBox></div><br>
+  Description<br>
+  <textarea id=cardDescription autocorrect=off spellcheck=false onchange=descChanged() oninput="this.style.height=0;this.style.height=this.scrollHeight+8+'px'"></textarea>
+  <div class=saveDescriptionBtns>
+    <input type=button id=sav value=Save onclick=saveCard()>
+    <input type=button id=can value=Cancel onclick=cancelCard()>
+  </div>
+  <button id=archiveBtn onclick=archiveCard()>Archive</button>
+</div>
+
+</div>
+
+</body></html>
