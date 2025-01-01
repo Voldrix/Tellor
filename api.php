@@ -5,6 +5,7 @@ if(empty($_REQUEST['api'])) {
 }
 $scon = new mysqli('localhost', 'telloruser', 'tellorpasswd', 'tellordb');
 $scon->set_charset('utf8mb4');
+header("Cache-Control: no-store");
 
 switch ($_REQUEST['api']) {
   case 'getBoards': getBoards(); break;
