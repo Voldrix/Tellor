@@ -100,6 +100,7 @@ function getBoards() {
       }
       if(boardID) {
         currentBoard = boardsJSON.find(e => e.id === boardID);
+        boardsSelect.value = boardID;
         if(currentBoard) {
           history.replaceState(boardID, '', '?b=' + boardID);
           document.title = currentBoard.name + ' | Tellor';
