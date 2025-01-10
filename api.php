@@ -133,7 +133,7 @@ function moveList() { //Move List
 function newCard() { //Add Card
   global $scon;
   $cardid = substr(str_shuffle(MD5(microtime())), 0, 16);
-  $res = $scon->query('INSERT INTO cards(board,list,id,parent,title) VALUES("'.$_REQUEST['bid'].'","'.$_REQUEST['listid'].'","'.$cardid.'","'.$_REQUEST['pid'].'","'.$_REQUEST['title'].'")');
+  $res = $scon->query('INSERT INTO cards(board,list,id,parent,title,tags,description) VALUES("'.$_REQUEST['bid'].'","'.$_REQUEST['listid'].'","'.$cardid.'","'.$_REQUEST['pid'].'","'.$_REQUEST['title'].'",null,null)');
   if($res) echo $cardid;
   else http_response_code(500);
 }
@@ -202,11 +202,9 @@ function delTag() { //Delete Tag
   $tag = mysqli_fetch_array($res)[0];
   $tag = preg_replace("/\b$color\b\s?/", '', $tag);
   $tag = trim($tag);
+  $tag = empty($tag) ? 'null' : '"'.$tag.'"';
 
-  if(empty($tag))
-    $res = $scon->query('UPDATE cards SET tags=null WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
-  else
-    $res = $scon->query('UPDATE cards SET tags="'.$tag.'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  $res = $scon->query('UPDATE cards SET tags='.$tag.' WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(!$res) http_response_code(500);
 }
 
