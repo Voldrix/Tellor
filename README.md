@@ -1,6 +1,5 @@
 # Tellor
-__Kanban todo app__\
-__Simple, minimal, single-user, compact UI__
+__Minimalist single-user (no auth) kanban todo app__
 
 [Live Demo](https://voldrixia.com/tellor/?b=18486f63be6bb5f2)
 

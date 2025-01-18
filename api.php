@@ -142,7 +142,7 @@ function newCard() { //Add Card
 function addTag() { //Add Tag
   global $scon;
   $color = $_REQUEST['color'];
-  if(preg_match("/^[a-zA-Z0-9]+$/", $color) && strlen($color) < 7) {
+  if(preg_match("/^[a-zA-Z0-9]{3,6}$/", $color)) {
     $res = $scon->query('UPDATE cards SET tags=CONCAT_WS(" ", tags, "'.$color.'") WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
     if(!$res) http_response_code(500);
   }
