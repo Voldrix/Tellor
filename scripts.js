@@ -1,4 +1,4 @@
-var boardID, boardsJSON, currentBoard, tags, lists, activeCard, listMax, saveDescTimer, savingCardID;
+var boardID, boardsJSON, currentBoard, tags, lists, activeCard, listMax;
 var tagPalette = ['900', 'F80', 'DD0', '090', '0DD', '00B', '80F', 'F08', 'E0E', 'F8F', '000', 'FFF', '888'];
 
 const getCookie = (cookie) => (document.cookie.match('(^|;)\\s*'+cookie+'\\s*=\\s*([^;]+)')?.pop()||'');
@@ -28,13 +28,13 @@ populateTagColors();
 
 
 //POP STATE
-window.onkeyup = (e) => {if(e.key === 'Escape') {route('home');}};
+window.onkeyup = (e) => {if(e.key === 'Escape') {closeCard();}};
 window.onpopstate = function(event) {
   route('home');
   if(event.state)
     changeBoard(event.state, true);
   else
-    document.title = 'Trello';
+    document.title = 'Tellor';
 };
 
 
@@ -46,6 +46,7 @@ function route(_route) {
     return;
   }
 
+  activeCard = 0;
   popupBG.style.display = 'none';
   newBoardBox.style.display = 'none';
   editBoardBox.style.display = 'none';
@@ -310,7 +311,7 @@ function viewCard(cardID) {
   xhttp.onloadend = function() {
     if(this.status === 200) {
       activeCard = JSON.parse(this.responseText);
-      if(activeCard == 0) {activeCard = 0; route('home'); return;}
+      if(activeCard == 0) {route('home'); return;}
       cardTitle.innerText = activeCard.title;
       cardDescription.value = activeCard.description;
       cardDescription.style.height = 0;
@@ -330,12 +331,19 @@ function viewCard(cardID) {
 }
 
 
-//SAVE CARD DETAILS
-function saveCard(activeCardID=false) {
-  clearTimeout(saveDescTimer);
-  if(!activeCard && !activeCardID) return;
+//CLOSE POPUPS
+function closeCard() {
+  if(activeCard) //card details
+    saveCard();
+  route('home');
+}
 
-  activeCardID = activeCardID ? activeCardID : activeCard.id;
+
+//SAVE CARD DETAILS
+function saveCard() {
+  if(!activeCard) return;
+
+  var activeCardID = activeCard.id;
   var title = cardTitle.innerText.trim();
   if(!title) {
     cardTitle.innerText = activeCard.title;
@@ -351,8 +359,10 @@ function saveCard(activeCardID=false) {
     if(this.status === 200) {
       var card = document.getElementById(activeCardID);
       card.lastChild.textContent = title;
-      if(activeCard) activeCard.title = title;
-      activeCard.description = cardDescription.value;
+      if(activeCard) {
+        activeCard.title = title;
+        activeCard.description = cardDescription.value;
+      }
       if(cardDescription.value)
         card.classList.add('hasDescription');
       else
@@ -360,25 +370,17 @@ function saveCard(activeCardID=false) {
       viewCardBox.focus();
     }
   }
-  xhttp.open('POST', 'api.php?api=saveCard&bid=' + boardID + '&cardid=' + activeCardID + '&title=' + encodeURIComponent(title), true);
-  xhttp.send(cardDescription.value);
+  if(activeCard.title != title || (activeCard.description || '') != cardDescription.value) { //title or descrption changed
+    xhttp.open('POST', 'api.php?api=saveCard&bid=' + boardID + '&cardid=' + activeCard.id + '&title=' + encodeURIComponent(title), true);
+    xhttp.send(cardDescription.value);
+  }
 }
 
 
 //CANCEL CARD DETAILS
 function cancelCard() {
-  clearTimeout(saveDescTimer);
-  if(activeCard) {
-    cardDescription.value = activeCard.description;
-    viewCardBox.focus();
-  }
-}
-
-
-//DESCRIPTION CHANGED
-function descChanged() {
-  savingCardID = activeCard.id;
-  saveDescTimer = setTimeout(saveCard, 150, savingCardID);
+  cardDescription.value = activeCard.description;
+  viewCardBox.focus();
 }
 
 
