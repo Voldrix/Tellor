@@ -99,10 +99,11 @@ function getBoards() {
         boardsSelect.appendChild(option);
         boards.innerHTML += `<a href="?b=${b.id}" onclick="event.preventDefault();changeBoard('${b.id}')">${b.name}</a>`;
       }
-      if(boardID) {
+      if(boardID) { //default board set, changeBoard will run
         currentBoard = boardsJSON.find(e => e.id === boardID);
         boardsSelect.value = boardID;
-        if(currentBoard) {
+        if(currentBoard) { //board exists
+          setActiveBoardBtn();
           history.replaceState(boardID, '', '?b=' + boardID);
           document.title = currentBoard.name + ' | Tellor';
           main.style.backgroundImage = currentBoard.bgimg ? 'url(' + currentBoard.bgimg + ')' : null;
@@ -179,16 +180,17 @@ function changeBoard(bid, popState=false) {
   xhttp.onloadend = function() {
     if(this.status === 200) {
       boardID = bid;
-      if(boardsJSON)
+      if(boardsJSON) //getBoards loaded before now (race cond)
         currentBoard = boardsJSON.find(e => e.id === bid);
       boardsSelect.value = bid;
       var j = JSON.parse(this.responseText);
       lists = j.lists;
       render(bid, j.cards);
+      setActiveBoardBtn(); //set active btn
       setCookie('bid', bid, false);
       if(!popState)
         history.pushState(bid, '', '?b=' + bid);
-      if(currentBoard)
+      if(currentBoard) //getBoards loaded before now (race cond) && board exists
         document.title = currentBoard.name + ' | Tellor';
       delete j.cards;
     }
@@ -196,6 +198,18 @@ function changeBoard(bid, popState=false) {
   }
   xhttp.open('GET', 'api.php?api=getBoard&bid=' + bid, true);
   xhttp.send();
+}
+
+
+//Set Active Board Btn
+function setActiveBoardBtn() {
+  var menuBtns = boards.querySelectorAll('a');
+  for(e of menuBtns) {
+    if(e.search === '?b=' + boardID)
+      e.classList.add('activeBoard');
+    else
+      e.classList.remove('activeBoard');
+  }
 }
 
 

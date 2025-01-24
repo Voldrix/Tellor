@@ -19,8 +19,9 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 .menu {position:fixed;width:220px;padding-top:12px;overflow-y:auto;top:38px;bottom:0;left:0;word-break:break-all;text-align:center;z-index:1;background-color:var(--menu-bg);border-right:1px solid var(--menu-border);scrollbar-color:#0000 #0000 !important;transition:left ease .5s,scrollbar-color linear .5s;}
 .menu button {width:80%;color:#999;line-height:20px;padding:4px 11px;background-color:#242424;margin:4px 0;border-radius:12px;border-left:2px solid black;border-right:2px solid black;cursor:pointer;}
 .menu button:hover {background-color:#1d1d1d;border-color:var(--accent);}
-.menu a {display:block;color:#A0A0A0;padding:4px;margin:8px;box-shadow:2px 2px 4px -2px #eee inset,-2px -2px 4px 0px #000 inset;border-radius:4px;}
-.menu a:hover {box-shadow:2px -2px 4px -2px #eee inset,0 2px 4px 0px #000 inset;}
+.menu a {display:block;color:#A0A0A0;padding:4px;margin:8px;border-radius:14px;border-top:1px solid #515151;border-bottom:1px solid #000;}
+.menu a:hover {background:#203040;}
+.menu a.activeBoard {color:var(--accent);background:none;border-left:2px solid var(--accent);border-right:2px solid var(--accent);}
 
 /* MAIN CARDS */
 .main {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;position:absolute;top:38px;left:220px;right:0;bottom:0;padding:10px;background-size:cover;background-position:center;box-sizing:border-box;overflow-y:hidden;overflow-x:auto;transition:left ease .5s;}
