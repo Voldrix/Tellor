@@ -321,33 +321,43 @@ function newCard(listID) {
 function viewCard(cardID) {
   route('viewCard');
 
+  var _card = document.getElementById(cardID);
+  cardTitle.innerText = _card.textContent;
+  cardDescription.value = '';
+  cardDescription.style.height = 0;
+  var cardTags = document.getElementById('tags' + cardID);
+  var _tags = [...cardTags.children].map(e => e.attributes.color.value);
+  if(_tags && _tags != 0) {
+    for(color of _tags) {
+      var newTag = document.createElement('div');
+      newTag.style.background = '#'+color;
+      newTag.setAttribute('onclick', "delTag(this,'"+color+"')");
+      addTagBtn.insertAdjacentElement('beforebegin', newTag);
+    }
+  }
+
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
-      activeCard = JSON.parse(this.responseText);
-      if(activeCard == 0) {route('home'); return;}
-      cardTitle.innerText = activeCard.title;
-      cardDescription.value = activeCard.description;
-      cardDescription.style.height = 0;
-      cardDescription.style.height = cardDescription.scrollHeight + 8 + 'px';
-      var _tags = activeCard.tags?.split(' ');
-      if(!_tags || _tags == 0 || _tags[0] == '') return;
-      for(color of _tags) {
-        var newTag = document.createElement('div');
-        newTag.style.background = '#'+color;
-        newTag.setAttribute('onclick', "delTag(this,'"+color+"')");
-        addTagBtn.insertAdjacentElement('beforebegin', newTag);
+      activeCard.description = JSON.parse(this.responseText)?.description;
+      if(activeCard.description) {
+        cardDescription.value = activeCard.description;
+        cardDescription.style.height = cardDescription.scrollHeight + 8 + 'px';
       }
     }
   }
-  xhttp.open('GET', 'api.php?api=getCard&bid=' + boardID + '&cardid=' + cardID, true);
-  xhttp.send();
+
+  if(_card.classList.contains('hasDescription')) { //only call db if card has a description
+    xhttp.open('GET', 'api.php?api=getCard&bid=' + boardID + '&cardid=' + cardID, true);
+    xhttp.send();
+  }
+  activeCard = {id: cardID, title: _card.textContent, description: ''};
 }
 
 
 //CLOSE POPUPS
 function closeCard() {
-  if(activeCard) //card details
+  if(activeCard) //save before route to preserve card details
     saveCard();
   route('home');
 }
@@ -357,9 +367,9 @@ function closeCard() {
 function saveCard() {
   if(!activeCard) return;
 
-  var activeCardID = activeCard.id;
+  var card = document.getElementById(activeCard.id);
   var title = cardTitle.innerText.trim();
-  if(!title) {
+  if(!title) { //revert empty title
     cardTitle.innerText = activeCard.title;
     return;
   }
@@ -371,22 +381,19 @@ function saveCard() {
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
-      var card = document.getElementById(activeCardID);
       card.lastChild.textContent = title;
       if(activeCard) {
         activeCard.title = title;
         activeCard.description = cardDescription.value;
       }
-      if(cardDescription.value)
-        card.classList.add('hasDescription');
-      else
-        card.classList.remove('hasDescription');
-      viewCardBox.focus();
     }
   }
   if(activeCard.title != title || (activeCard.description || '') != cardDescription.value) { //title or descrption changed
     xhttp.open('POST', 'api.php?api=saveCard&bid=' + boardID + '&cardid=' + activeCard.id + '&title=' + encodeURIComponent(title), true);
     xhttp.send(cardDescription.value);
+
+    if(cardDescription.value) card.classList.add('hasDescription');
+    else card.classList.remove('hasDescription');
   }
 }
 
