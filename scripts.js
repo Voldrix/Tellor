@@ -293,18 +293,6 @@ function newCard(listID) {
   var pid = lastCard ? lastCard.id : '0';
   var _cardTitle = 'New Card';
 
-  var xhttp = new XMLHttpRequest();
-  xhttp.onloadend = function() {
-    if(this.status === 200) {
-      newCard.id = this.responseText;
-      newCardTags.id = 'tags' + this.responseText;
-      newCard.setAttribute('onclick', "viewCard('"+this.responseText+"')");
-    }
-    else newCard.remove();
-  }
-  xhttp.open('GET', 'api.php?api=newCard&bid=' + boardID + '&listid=' + listID + '&pid=' + pid  + '&title=' + encodeURIComponent(_cardTitle), true);
-  xhttp.send();
-
   var newCard = document.createElement('div');
   newCard.classList.add('card');
   newCard.setAttribute('draggable', true); newCard.setAttribute('ondragstart', "dragStart(event)"); newCard.setAttribute('ondragend', "dragEnd(event)"); newCard.setAttribute('ondragenter', "dragEnter(event)");
@@ -314,6 +302,21 @@ function newCard(listID) {
   newCard.appendChild(document.createTextNode(_cardTitle));
   cardsContainer.appendChild(newCard);
   cardsContainer.scrollTop = cardsContainer.scrollHeight;
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onloadend = function() {
+    if(this.status === 200) {
+      newCard.id = this.responseText;
+      newCardTags.id = 'tags' + this.responseText;
+      newCard.setAttribute('onclick', "viewCard('"+this.responseText+"')");
+      viewCard(this.responseText);
+      window.getSelection().selectAllChildren(cardTitle);
+    }
+    else newCard.remove();
+  }
+
+  xhttp.open('GET', 'api.php?api=newCard&bid=' + boardID + '&listid=' + listID + '&pid=' + pid  + '&title=' + encodeURIComponent(_cardTitle), true);
+  xhttp.send();
 }
 
 

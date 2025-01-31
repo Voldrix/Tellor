@@ -24,7 +24,7 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 .menu a.activeBoard {color:var(--accent);background:none;border-left:2px solid var(--accent);border-right:2px solid var(--accent);}
 
 /* MAIN CARDS */
-.main {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;position:absolute;top:35px;left:220px;right:0;bottom:0;padding:10px;background-size:cover;background-position:center;box-sizing:border-box;overflow-y:hidden;overflow-x:auto;transition:left ease .5s;}
+.main {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;position:absolute;top:35px;left:220px;right:0;bottom:0;padding:10px;background-size:cover;background-position:center;box-sizing:border-box;overflow-y:hidden;overflow-x:auto;scrollbar-width:thin;transition:left ease .5s;}
 .dragster {position:absolute;pointer-events:none;cursor:grabbing;contain:content;}
 .spacer {height:35px;}
 /* lists */
@@ -42,7 +42,7 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 #newListBtn:hover {background:#0002;}
 
 /* cards */
-.cardContainer {padding:0 8px;overflow-y:auto;}
+.cardContainer {padding:0 8px;overflow-y:auto;scrollbar-width:thin;}
 .card {background-color:#22272B;border-radius:7px;margin:6px 0;padding:0 8px 6px 8px;box-sizing:border-box;white-space:pre-wrap;cursor:pointer;}
 .card:first-child {margin-top:0;}
 .card:last-child {margin-bottom:0;}
@@ -105,8 +105,4 @@ body.menu-closed .main {left:0;}
 
 ::selection {color:var(--accent);background-color:#000;}
 :root {scrollbar-width:thin !important;scrollbar-color:#338 #0000 !important;}
-::-webkit-scrollbar {width:7px;}
-::-webkit-scrollbar-track {background:transparent;}
-::-webkit-scrollbar-thumb {background:#000;border-radius:3px;}
-::-webkit-resizer, ::-webkit-scrollbar-button {display:none;}
 
