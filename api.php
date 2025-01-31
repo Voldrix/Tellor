@@ -68,7 +68,7 @@ function getBoard() { //Get Board (lists + cards)
 
 function newBoard() { //New Board
   global $scon;
-  $bid = substr(str_shuffle(MD5(microtime())), 0, 16);
+  $bid = bin2hex(random_bytes(8));
   $name = $_REQUEST['name'];
   if(preg_match("/[\\\"<&]/", $name)) {http_response_code(400); return;}
 
@@ -98,7 +98,7 @@ function editBoard() { //Edit Board
 
 function addList() { //Add List
   global $scon;
-  $lid = substr(str_shuffle(MD5(microtime())), 0, 16);
+  $lid = bin2hex(random_bytes(8));
 
   $sq = $scon->prepare('INSERT INTO lists(board,id,color,name,ordr) VALUES("'.$_REQUEST['bid'].'","'.$lid.'",null,?,'.$_REQUEST['pos'].')');
   $sq->bind_param('s', $_REQUEST['name']);
@@ -132,7 +132,7 @@ function moveList() { //Move List
 
 function newCard() { //Add Card
   global $scon;
-  $cardid = substr(str_shuffle(MD5(microtime())), 0, 16);
+  $cardid = bin2hex(random_bytes(8));
   $res = $scon->query('INSERT INTO cards(board,list,id,parent,title,tags,description) VALUES("'.$_REQUEST['bid'].'","'.$_REQUEST['listid'].'","'.$cardid.'","'.$_REQUEST['pid'].'","'.$_REQUEST['title'].'",null,null)');
   if($res) echo $cardid;
   else http_response_code(500);
@@ -289,7 +289,7 @@ function importTrello($data) { //Import Trello
   global $scon;
   $colorCodes = array("black" => "000000", "silver" => "C0C0C0", "gray" => "808080", "white" => "FFFFFF", "maroon" => "800000", "red" => "FF0000", "purple" => "800080", "fuchsia" => "FF00FF", "green" => "008000", "lime" => "00FF00", "olive" => "808000", "yellow" => "FFFF00", "navy" => "000080", "blue" => "0000FF", "teal" => "008080", "aqua" => "00FFFF");
 
-  $bid = substr(str_shuffle(MD5(microtime())), 0, 16);
+  $bid = bin2hex(random_bytes(8));
   $boardName = str_replace(['\\','"','<','\n'], '', $data->name);
   $res = $scon->query('INSERT INTO boards(id,name,bgimg) VALUES("'.$bid.'","'.$boardName.'","'.$data->perfs->backgroundImage.'")');
   if(!$res) {http_response_code(500); return;}
@@ -301,14 +301,14 @@ function importTrello($data) { //Import Trello
 
   foreach($data->lists as $list) {
     if($list->closed) continue;
-    $lid = substr(str_shuffle(MD5(microtime())), 0, 16);
+    $lid = bin2hex(random_bytes(8));
     $sqlLists->bind_param('ssssi', $bid, $lid, $list->color, $list->name, $list->pos);
     $sqlLists->execute();
 
     $pid = "0";
     foreach($data->cards as $card) {
       if($card->closed || $card->idList	!== $list->id) continue;
-      $cid = substr(str_shuffle(MD5(microtime())), 0, 16);
+      $cid = bin2hex(random_bytes(8));
 
       $tags = "";
       foreach($card->labels as $label) {
