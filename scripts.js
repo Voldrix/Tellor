@@ -10,20 +10,17 @@ function setCookie(cookie, value, del=false) {
 }
 
 
-//STORY HOT LINK
+//BOARD HOT LINK
 var urlParams = new URLSearchParams(window.location.search);
-var boardID = urlParams.get('b');
-
-
-//READ COOKIES
-if(document.cookie && !boardID) {
-  boardID = getCookie('bid') || null;
-}
+var boardID = urlParams.get('b') || getCookie('bid') || null;
+var menuState = getCookie('menuState') || 'open';
 
 
 getBoards();
 if(boardID)
   changeBoard(boardID, true);
+if(menuState !== 'open' && window.innerWidth > 1000)
+  toggleMenu();
 populateTagColors();
 
 
@@ -589,9 +586,20 @@ function populateTagColors() {
   }
 }
 
+
 //Show Tags
 function showTags() {
   addTagBox.style.height = (addTagBox.style.height != '18px') ? '18px' : 0;
+}
+
+
+//Toggle Menu
+function toggleMenu() {
+  document.body.classList.toggle('menu-closed');
+  if(document.body.classList.contains('menu-closed') && window.innerWidth > 1000)
+    setCookie('menuState', 'closed', false);
+  else
+    setCookie('menuState', '', true);
 }
 
 
