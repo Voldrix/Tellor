@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang=en><head><meta charset=utf-8>
 <link rel=stylesheet href=style.css>
+<meta name=referrer content=no-referrer>
 <meta name=viewport content="width=device-width">
 <title>Tellor</title>
 <script defer src=scripts.js></script>
@@ -76,7 +77,9 @@
   <div id=tagsBox><button id=addTagBtn onclick=showTags()>+</button></div>
   <div id=addTagBox></div><br>
   Description<br>
-  <textarea id=cardDescription autocorrect=off spellcheck=false oninput="this.style.height=0;this.style.height=this.scrollHeight+8+'px'"></textarea>
+  <div id=cardDescDiv class=cardDescription onclick=editDescription(event)></div>
+  <textarea id=cardDescTA class=cardDescription autocorrect=off spellcheck=false maxlength=1023 oninput="this.style.height=0;this.style.height=this.scrollHeight+2+'px'" onblur=doneEditDescription()></textarea>
+
   <div class=saveDescriptionBtns>
     <input type=button id=sav value=Save onclick=saveCard()>
     <input type=button id=can value=Cancel onclick=cancelCard()>

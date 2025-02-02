@@ -78,6 +78,8 @@ function route(_route) {
     popupBG.style.display = 'flex';
     viewCardBox.style.display = 'block';
     tagsBox.innerHTML = '<button id=addTagBtn onclick=showTags()>+</button>';
+    cardDescTA.style.display = 'none';
+    cardDescDiv.style.display = 'block';
     addTagBox.style.height = 0;
   }
 }
@@ -274,6 +276,7 @@ function addList() {
       newList.innerHTML = `<div class=listTitle id=${this.responseText} ordr=${listMax}><div class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${lname}</div><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${this.responseText}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${this.responseText}')>+ Add Card</div>`;
       newListColumn.insertAdjacentElement('beforeBegin', newList);
       newListName.value = null;
+      main.scrollLeft = main.scrollWidth;
     }
   }
   xhttp.open('GET', 'api.php?api=addList&bid=' + boardID + '&name=' + encodeURIComponent(lname) + '&pos=' + (listMax + 1), true);
@@ -317,15 +320,22 @@ function newCard(listID) {
 }
 
 
+//CLOSE POPUPS
+function closeCard() {
+  if(activeCard) //save before route to preserve card details
+    saveCard();
+  route('home');
+}
+
+
 //VIEW CARD DETAILS
 function viewCard(cardID) {
   route('viewCard');
 
   var _card = document.getElementById(cardID);
-  cardTitle.innerText = _card.textContent;
-  cardDescription.value = '';
-  cardDescription.style.height = 0;
-  var cardTags = document.getElementById('tags' + cardID);
+  cardTitle.innerText = _card.textContent; //get title from card tile
+  cardDescTA.value = cardDescDiv.innerHTML = ''; //clear description
+  var cardTags = document.getElementById('tags' + cardID); //get tags from card tile
   var _tags = [...cardTags.children].map(e => e.attributes.color.value);
   if(_tags && _tags != 0) {
     for(color of _tags) {
@@ -341,8 +351,8 @@ function viewCard(cardID) {
     if(this.status === 200) {
       activeCard.description = JSON.parse(this.responseText)?.description;
       if(activeCard.description) {
-        cardDescription.value = activeCard.description;
-        cardDescription.style.height = cardDescription.scrollHeight + 8 + 'px';
+        cardDescTA.value = activeCard.description;
+        parseDescription();
       }
     }
   }
@@ -352,14 +362,6 @@ function viewCard(cardID) {
     xhttp.send();
   }
   activeCard = {id: cardID, title: _card.textContent, description: ''};
-}
-
-
-//CLOSE POPUPS
-function closeCard() {
-  if(activeCard) //save before route to preserve card details
-    saveCard();
-  route('home');
 }
 
 
@@ -373,10 +375,6 @@ function saveCard() {
     cardTitle.innerText = activeCard.title;
     return;
   }
-  if(title.length > 1023) {
-    alert('Error:\nTitle length: ' + title.length + '\nRequired: 1 - 1023');
-    return;
-  }
 
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
@@ -384,24 +382,50 @@ function saveCard() {
       card.lastChild.textContent = title;
       if(activeCard) {
         activeCard.title = title;
-        activeCard.description = cardDescription.value;
+        activeCard.description = cardDescTA.value;
       }
     }
   }
-  if(activeCard.title != title || (activeCard.description || '') != cardDescription.value) { //title or descrption changed
+  if(activeCard.title != title || (activeCard.description || '') != cardDescTA.value) { //title or descrption changed
     xhttp.open('POST', 'api.php?api=saveCard&bid=' + boardID + '&cardid=' + activeCard.id + '&title=' + encodeURIComponent(title), true);
-    xhttp.send(cardDescription.value);
+    xhttp.send(cardDescTA.value);
 
-    if(cardDescription.value) card.classList.add('hasDescription');
+    if(cardDescTA.value) card.classList.add('hasDescription');
     else card.classList.remove('hasDescription');
   }
 }
 
 
-//CANCEL CARD DETAILS
+//EDIT DESCRIPTION
+function editDescription(event) { //onClick
+  if(event.target.nodeName == 'A') //enable link click w/o starting edit
+    return;
+  cardDescDiv.style.display = 'none';
+  cardDescTA.style.display = 'block';
+  cardDescTA.style.height = 0;
+  cardDescTA.style.height = cardDescTA.scrollHeight + 2 + 'px'; //+2 eliminates scrollbar
+  cardDescTA.focus();
+}
+
+//EDIT DESCRIPTION FINISHED
+function doneEditDescription() { //onBlur
+  cardDescDiv.style.display = 'block';
+  cardDescTA.style.display = 'none';
+  if(!activeCard) return; //saved and closed already
+  parseDescription();
+}
+
+//CANCEL DESCRIPTION
 function cancelCard() {
-  cardDescription.value = activeCard.description;
-  viewCardBox.focus();
+  cardDescTA.value = activeCard.description;
+  parseDescription();
+}
+
+//PARSE DESCRIPTION
+function parseDescription() {
+  var parsedDesc = cardDescTA.value.replaceAll('<', '&lt;'); //html -> text
+  parsedDesc = parsedDesc.replace(/(https?:\/\/[^\s)]+)/g, '<a href="$1" target=_blank>$1</a>'); //links -> html
+  cardDescDiv.innerHTML = parsedDesc;
 }
 
 

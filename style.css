@@ -1,7 +1,7 @@
 :root {--main-bg:#383C43; --menu-bg:#282B2F; --menu-border:#000; --title:#A0ADBB; --text:#F0F0F0; --accent:#175CA2;}
 
 body {font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);background-color:var(--main-bg);font-size:14px;line-height:18px;text-align:left;margin:0;padding:0;}
-div,span,img,h1,h2,input,select,button {border:none;margin:0;padding:0;font-size:14px;}
+div,span,img,h1,h2,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
 a {color:var(--accent);text-decoration:none;}
 input:focus {outline:2px solid var(--accent);}
 h1 {display:inline;font-size:28px;line-height:28px;vertical-align:top;}
@@ -73,10 +73,10 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 .viewCardBox {display:none;width:768px;max-width:90vw;padding:6px 12px;background-color:#282E33;border-radius:9px;}
 .cardTitle {display:block;font-size:16px;line-height:22px;margin-bottom:10px;padding:6px;border-radius:7px;background:none;}
 .cardTitle:focus {background-color:#1a1e22;outline:1px solid var(--accent);}
-#cardDescription {font-family:monospace;font-size:14px;line-height:16px;width:100%;min-height:130px;padding:2px;background:#ddd1;border:none;box-sizing:border-box;white-space:pre-wrap;}
+.cardDescription {display:none;font-family:monospace;line-height:16px;min-height:130px;width:100%;padding:4px;color:var(--text);background:#343a3f;border:1px solid #21272c;overflow-wrap:break-word;box-sizing:border-box;white-space:pre-wrap;}
 .saveDescriptionBtns {display:none;}
-#cardDescription:focus {outline:2px solid var(--accent);}
-#cardDescription:focus + .saveDescriptionBtns, .saveDescriptionBtns:hover {display:inline-block;}
+#cardDescTA:focus {outline:2px solid var(--accent);}
+#cardDescTA:focus + .saveDescriptionBtns, .saveDescriptionBtns:hover {display:inline-block;}
 .saveDescriptionBtns {margin-top:6px;}
 #sav {color:var(--accent);font-size:16px;line-height:18px;padding:5px 10px;margin-right:8px;border:2px solid var(--accent);border-radius:7px;background:none;}
 #sav:hover {color:#000;background:var(--accent);}
@@ -93,6 +93,7 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 #addTagBox div {flex:1 1 7.69%;transform:skewX(135deg) scaleY(cos(135deg));cursor:pointer;}
 #addTagBox div:hover {transform:skewX(135deg) scaleY(cos(135deg)) scale(1.25);z-index:1;cursor:pointer;}
 
+/* MISC */
 #loader {display:none;width:40px;height:40px;border-radius:50%;border-top:3px solid #FFF;border-right:3px solid transparent;animation:rotation 1s linear infinite;}
 @keyframes rotation {0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);}}
 
