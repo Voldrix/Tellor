@@ -2,6 +2,7 @@
 
 body {font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);background-color:var(--main-bg);font-size:14px;line-height:18px;text-align:left;margin:0;padding:0;}
 div,span,img,h1,h2,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
+button,select {cursor:pointer;}
 a {color:var(--accent);text-decoration:none;}
 input:focus {outline:2px solid var(--accent);}
 h1 {display:inline;font-size:28px;line-height:28px;vertical-align:top;}
@@ -9,15 +10,15 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 
 /* HEAD */
 .head {color:var(--title);background-color:var(--menu-bg);border-bottom:1px solid var(--menu-border);}
-.menuBtn {background:none;border:none;padding:4px 10px 3px 10px;cursor:pointer;}
+.menuBtn {background:none;border:none;padding:4px 10px 3px 10px;}
 .menuBtn:hover {transform:scale(1.2);}
 .menuBtn svg {height:24px;width:24px;stroke:var(--title);}
-.head select {vertical-align:super;margin-left:12px;color:var(--text);background-color:#0003;padding:4px 8px;border-left:2px solid #33f;border-right:2px solid #b33;border-radius:24px;cursor:pointer;}
+.head select {vertical-align:super;margin-left:12px;color:var(--text);background-color:#0003;padding:4px 8px;border-left:2px solid #33f;border-right:2px solid #b33;border-radius:24px;}
 .head select:hover {border-color:var(--accent);}
 
 /* MENU */
 .menu {position:fixed;width:220px;padding-top:7px;overflow-y:auto;top:34px;bottom:0;left:0;word-break:break-all;text-align:center;z-index:1;background-color:var(--menu-bg);border-right:1px solid var(--menu-border);scrollbar-color:#0000 #0000 !important;transition:left ease .5s,scrollbar-color linear .5s;}
-.menu button {width:78%;color:#999;line-height:19px;padding:4px;background-color:#222426;margin:4px 0;border-radius:12px;border-left:2px solid black;border-right:2px solid black;cursor:pointer;}
+.menu button {width:78%;color:#999;line-height:19px;padding:4px;background-color:#222426;margin:4px 0;border-radius:12px;border-left:2px solid black;border-right:2px solid black;}
 .menu button:hover {background-color:#1E2022;border-color:var(--accent);}
 .menu a {display:block;color:#A0A0A0;padding:4px;margin:8px;border-radius:14px;border-top:1px solid #515151;border-bottom:1px solid #000;}
 .menu a:hover {background:#203040;}
@@ -32,13 +33,13 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 .listTitle {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;margin:0 8px 3px 8px;}
 .listTitle .listName {flex:1 1 50%;padding:0 0 2px 2px;margin-right:5px;border-radius:6px;white-space:pre-wrap;}
 .listTitle .listName:focus {outline:2px solid var(--accent);outline-offset:2px;}
-.moveListBtn, .deleteListBtn {color:#bbb;background:none;font-size:18px;line-height:18px;cursor:pointer;}
+.moveListBtn, .deleteListBtn {color:#bbb;background:none;font-size:18px;line-height:18px;}
 .moveListBtn:hover {color:var(--accent);}
 .deleteListBtn {display:none;color:#911;margin-left:4px;}
 .listTitle .listName:focus ~ .moveListBtn {display:none;}
 .listTitle .listName:focus ~ .deleteListBtn, .listTitle .deleteListBtn:hover {display:block;}
 #newListName {margin:8px 0;padding:3px 5px;background:none;border:2px solid var(--accent);color:#ccc;border-radius:6px;}
-#newListBtn {padding:3px 7px;background:none;border:2px solid var(--accent);border-radius:9px;color:#ccc;font-size:12px;cursor:pointer;}
+#newListBtn {padding:3px 7px;background:none;border:2px solid var(--accent);border-radius:9px;color:#ccc;font-size:12px;}
 #newListBtn:hover {background:#0002;}
 
 /* cards */
@@ -88,10 +89,10 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 /* TAGS */
 .tags {padding:2px 4px;line-height:0;pointer-events:none;}
 .tags div {display:inline-block;width:60px;height:8px;transform:skewX(135deg) scaleY(cos(135deg));}
-#tagsBox div, #tagsBox button {display:inline-block;height:18px;width:48px;vertical-align:top;transform:skewX(135deg) scaleY(cos(135deg));}
+#tagsBox div, #tagsBox button {display:inline-block;height:18px;width:48px;vertical-align:top;transform:skewX(135deg) scaleY(cos(135deg));cursor:pointer;}
 #addTagBox {display:flex;flex-flow:row nowrap;height:0;}
 #addTagBox div {flex:1 1 7.69%;transform:skewX(135deg) scaleY(cos(135deg));cursor:pointer;}
-#addTagBox div:hover {transform:skewX(135deg) scaleY(cos(135deg)) scale(1.25);z-index:1;cursor:pointer;}
+#addTagBox div:hover {transform:skewX(135deg) scaleY(cos(135deg)) scale(1.25);z-index:1;}
 
 /* MISC */
 #loader {display:none;width:40px;height:40px;border-radius:50%;border-top:3px solid #FFF;border-right:3px solid transparent;animation:rotation 1s linear infinite;}

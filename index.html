@@ -81,8 +81,8 @@
   <textarea id=cardDescTA class=cardDescription autocorrect=off spellcheck=false maxlength=1023 oninput="this.style.height=0;this.style.height=this.scrollHeight+2+'px'" onblur=doneEditDescription()></textarea>
 
   <div class=saveDescriptionBtns>
-    <input type=button id=sav value=Save onclick=saveCard()>
-    <input type=button id=can value=Cancel onclick=cancelCard()>
+    <button id=sav onclick=saveCard()>Save</button>
+    <button id=can onclick=cancelCard()>Cancel</button>
   </div>
   <button id=archiveBtn onclick=archiveCard()>Archive</button>
 </div>
