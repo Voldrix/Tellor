@@ -294,9 +294,11 @@ function newCard(listID) {
   var _cardTitle = 'New Card';
 
   var newCard = document.createElement('div');
+  newCard.id = 'new'; //tmp id
   newCard.classList.add('card');
   newCard.setAttribute('draggable', true); newCard.setAttribute('ondragstart', "dragStart(event)"); newCard.setAttribute('ondragend', "dragEnd(event)"); newCard.setAttribute('ondragenter', "dragEnter(event)");
   var newCardTags = document.createElement('div');
+  newCardTags.id = 'tagsnew'; //tmp id
   newCardTags.classList.add('tags');
   newCard.appendChild(newCardTags);
   newCard.appendChild(document.createTextNode(_cardTitle));
@@ -306,24 +308,29 @@ function newCard(listID) {
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
-      newCard.id = this.responseText;
-      newCardTags.id = 'tags' + this.responseText;
+      newCard.id = activeCard.id = this.responseText; //real id
+      newCardTags.id = 'tags' + this.responseText; //real id
       newCard.setAttribute('onclick', "viewCard('"+this.responseText+"')");
-      viewCard(this.responseText);
-      window.getSelection().selectAllChildren(cardTitle);
     }
     else newCard.remove();
   }
 
   xhttp.open('GET', 'api.php?api=newCard&bid=' + boardID + '&listid=' + listID + '&pid=' + pid  + '&title=' + encodeURIComponent(_cardTitle), true);
   xhttp.send();
+  viewCard('new');
+  window.getSelection().selectAllChildren(cardTitle);
 }
 
 
 //CLOSE POPUPS
 function closeCard() {
-  if(activeCard) //save before route to preserve card details
+  if(activeCard) { //save before route to preserve card details
+    if(activeCard.id === 'new') { //retry save until new card id has resolved
+      setTimeout(closeCard, 100);
+      return;
+    }
     saveCard();
+  }
   route('home');
 }
 
@@ -387,6 +394,10 @@ function saveCard() {
     }
   }
   if(activeCard.title != title || (activeCard.description || '') != cardDescTA.value) { //title or descrption changed
+    if(activeCard.id === 'new') { //retry save until new card id has resolved. skip if no change made
+      setTimeout(saveCard, 100);
+      return;
+    }
     xhttp.open('POST', 'api.php?api=saveCard&bid=' + boardID + '&cardid=' + activeCard.id + '&title=' + encodeURIComponent(title), true);
     xhttp.send(cardDescTA.value);
 
@@ -523,8 +534,10 @@ function renameList(titleElem) {
       alert('Error: ' + this.status);
     }
   }
-  xhttp.open('GET', 'api.php?api=renameList&bid=' + boardID + '&lid=' + listID + '&title=' + encodeURIComponent(listTitle), true);
-  xhttp.send();
+  if(listTitle !== _list.name) { //only save if name changed
+    xhttp.open('GET', 'api.php?api=renameList&bid=' + boardID + '&lid=' + listID + '&title=' + encodeURIComponent(listTitle), true);
+    xhttp.send();
+  }
 }
 
 
@@ -582,7 +595,7 @@ function deleteList(titleElem) {
 
 //ARCHIVE CARD
 function archiveCard() {
-  if(!activeCard) return;
+  if(!activeCard || activeCard.id === 'new') return;
   var _card = document.getElementById(activeCard.id);
   if(!_card) return;
   var pid = _card.previousElementSibling ? _card.previousElementSibling.id : '0';
@@ -592,7 +605,7 @@ function archiveCard() {
     if(this.status === 200) {
       _card.remove();
     }
-    else virwCard(_card.id);
+    else viewCard(_card.id);
   }
   xhttp.open('GET', 'api.php?api=archiveCard&bid=' + boardID + '&cardid=' + activeCard.id + '&pid=' + pid, true);
   xhttp.send();
