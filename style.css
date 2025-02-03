@@ -1,12 +1,11 @@
 :root {--main-bg:#383C43; --menu-bg:#282B2F; --menu-border:#000; --title:#A0ADBB; --text:#F0F0F0; --accent:#175CA2;}
 
 body {font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);background-color:var(--main-bg);font-size:14px;line-height:18px;text-align:left;margin:0;padding:0;}
-div,span,img,h1,h2,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
+div,span,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
 button,select {cursor:pointer;}
 a {color:var(--accent);text-decoration:none;}
-input:focus {outline:2px solid var(--accent);}
-h1 {display:inline;font-size:28px;line-height:28px;vertical-align:top;}
-h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:bold;padding:6px 8px;text-align:center;}
+h1 {display:inline;font-size:28px;line-height:28px;margin:0;vertical-align:top;}
+h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:bold;margin:0;padding:6px 8px;text-align:center;}
 
 /* HEAD */
 .head {color:var(--title);background-color:var(--menu-bg);border-bottom:1px solid var(--menu-border);}
@@ -20,7 +19,7 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 .menu {position:fixed;width:220px;padding-top:7px;overflow-y:auto;top:34px;bottom:0;left:0;word-break:break-all;text-align:center;z-index:1;background-color:var(--menu-bg);border-right:1px solid var(--menu-border);scrollbar-color:#0000 #0000 !important;transition:left ease .5s,scrollbar-color linear .5s;}
 .menu button {width:78%;color:#999;line-height:19px;padding:4px;background-color:#222426;margin:4px 0;border-radius:12px;border-left:2px solid black;border-right:2px solid black;}
 .menu button:hover {background-color:#1E2022;border-color:var(--accent);}
-.menu a {display:block;color:#A0A0A0;padding:4px;margin:8px;border-radius:14px;border-top:1px solid #515151;border-bottom:1px solid #000;}
+.menu a {display:block;color:#A0A0A0;padding:3px 4px 5px 4px;margin:8px;border-radius:14px;border-top:1px solid #515151;border-bottom:1px solid #000;}
 .menu a:hover {background:#203040;}
 .menu a.activeBoard {color:var(--accent);background:none;border-left:2px solid var(--accent);border-right:2px solid var(--accent);}
 
@@ -59,7 +58,8 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 #popupBG {display:none;flex-flow:row nowrap;justify-content:center;align-items:center;position:fixed;inset:0;z-index:2;background-color:#80808060;content-visibility:auto;contain:strict;}
 #newBoardBox, #editBoardBox, #importExportBox {display:none;overflow:hidden;border-radius:13px;background:linear-gradient(150deg,var(--main-bg),var(--accent),var(--main-bg),var(--accent));}
 .popupBody {text-align:center;padding:6px 8px 0 8px;}
-.popupBody input[type="text"] {background:#506090;border:1px solid #777;padding:3px 5px;border-radius:16px;color:white;}
+.popupBody input[type="text"] {background:#80808024;padding:4px 10px;color:#FFF;border-top:1px solid #000;border-bottom:1px solid #fff5;border-radius:16px;}
+.popupBody input[type="text"]:focus {outline:none;background:none;}
 /* bottom buttons */
 .bottomBtnsBar {display:flex;flex-flow:row nowrap;gap:2px;margin-top:12px;padding-top:1px;background-color:#000;}
 .bottomBtnsBar button {flex-grow:1;border:none;color:#000;padding:8px;text-align:center;}
