@@ -264,6 +264,7 @@ function render(bid, cards) {
 function addList() {
   var lname = newListName.value.trim();
   if(!lname) return;
+  lname = lname.replaceAll('<', '&lt;');
 
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
@@ -375,7 +376,6 @@ function viewCard(cardID) {
 //SAVE CARD DETAILS
 function saveCard() {
   if(!activeCard) return;
-
   var card = document.getElementById(activeCard.id);
   var title = cardTitle.innerText.trim();
   if(!title) { //revert empty title
@@ -513,6 +513,7 @@ function delTag(elem, color) {
 function renameList(titleElem) {
   if(!titleElem) return;
   var listTitle = titleElem.innerText.trim();
+  listTitle = listTitle.replaceAll('<', '&lt;');
   var listID = titleElem.parentElement.id;
   var _list = lists.find(e => e.id === listID);
   if(!listTitle) {
