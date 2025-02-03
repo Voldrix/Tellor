@@ -19,12 +19,12 @@ PHP 7+\
 mysql / mariadb
 
 ### Setup
-Clone repo into web directory\
-Open `setup-db.sh` and set DB user options. Can be new user\
-Run `./setup-db.sh` as root to create database\
-Copy DB creds into `api.php` line 6
+- Clone repo into web directory
+- _(optional)_ Open `setup-db.sh` and set DB user options. Can be new user
+- _(optional)_ Copy DB creds into `api.php` line 6
+- Run `./setup-db.sh` as root to create database
 
-There are default credentials, so steps 2 and 4 are optional
+There are default credentials, so steps 2 and 3 are optional
 
 ### Import / Export
 
@@ -35,7 +35,7 @@ Tellor boards cannot be ported to Trello.
 ### Security
 This is a single user application without the hassle of authentication.\
 But that means anyone who can find/access your board can modify it.\
-This application is meant to be kept in a private web directory, not publicly accessible. Either on a local network server, or protected upstream by the reverse proxy.
+This application is meant to be kept in a private web directory. Either on a local network server, or protected upstream by the reverse proxy.
 
 ### License
 [MIT](LICENSE)
