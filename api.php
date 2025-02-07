@@ -49,12 +49,17 @@ function getCard() { //Get Card
     $row = mysqli_fetch_assoc($res);
     echo json_encode($row);
   }
-  else echo '[]';
+  else http_response_code(404);
 }
 
 
 function getBoard() { //Get Board (lists + cards)
   global $scon;
+  $res = $scon->query('SELECT 1 FROM boards WHERE id="'.$_REQUEST['bid'].'"');
+  if(!$res || !mysqli_num_rows($res)) {
+    http_response_code(404);
+    return;
+  }
   $resL = $scon->query('SELECT id,color,name,ordr FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
   $resC = $scon->query('SELECT list,id,parent,title,tags,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $rowsL = mysqli_fetch_all($resL, MYSQLI_ASSOC);
@@ -153,7 +158,7 @@ function addTag() { //Add Tag
 function saveCard() { //Save Card
   global $scon;
   if($_SERVER['REQUEST_METHOD'] !== 'POST') {http_response_code(400); return;}
-  $desc = file_get_contents('php://input');
+  $desc = file_get_contents('php://input') ?: null;
   $sq = $scon->prepare('UPDATE cards SET title=?,description=? WHERE board=? AND id=? LIMIT 1');
   $sq->bind_param('ssss', $_REQUEST['title'], $desc, $_REQUEST['bid'], $_REQUEST['cardid']);
   $sq->execute();

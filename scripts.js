@@ -98,10 +98,9 @@ function getBoards() {
         boardsSelect.appendChild(option);
         boards.innerHTML += `<a href="?b=${b.id}" onclick="event.preventDefault();changeBoard('${b.id}')">${b.name}</a>`;
       }
-      if(boardID) { //default board set, changeBoard will run
+      if(boardID) { //default board set, changeBoard will/has run
         currentBoard = boardsJSON.find(e => e.id === boardID);
-        boardsSelect.value = boardID;
-        if(currentBoard) { //board exists
+        if(currentBoard && lists !== undefined) { //board exists and changeBoard resolved first (race cond)
           setActiveBoardBtn();
           history.replaceState(boardID, '', '?b=' + boardID);
           document.title = currentBoard.name + ' | Tellor';
@@ -178,22 +177,25 @@ function changeBoard(bid, popState=false) {
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
+      var _board = JSON.parse(this.responseText);
       boardID = bid;
-      if(boardsJSON) //getBoards loaded before now (race cond)
+      if(boardsJSON) //skip only if getBoards has not loaded yet (race cond)
         currentBoard = boardsJSON.find(e => e.id === bid);
-      boardsSelect.value = bid;
-      var j = JSON.parse(this.responseText);
-      lists = j.lists;
-      render(bid, j.cards);
-      setActiveBoardBtn(); //set active btn
+      lists = _board.lists;
+      render(_board.cards);
       setCookie('bid', bid, false);
       if(!popState)
         history.pushState(bid, '', '?b=' + bid);
-      if(currentBoard) //getBoards loaded before now (race cond) && board exists
-        document.title = currentBoard.name + ' | Tellor';
-      delete j.cards;
+      delete _board.cards;
     }
-    else alert('Error: ' + this.status);
+    else {
+      boardID = currentBoard = main.style.backgroundImage = null;
+      main.innerHTML = 'Error getting board: ' + this.status;
+    }
+    if(boardsJSON) { //skip only if getBoards has not loaded yet (race cond)
+      setActiveBoardBtn();
+      document.title = currentBoard ? currentBoard.name + ' | Tellor' : 'Tellor';
+    }
   }
   xhttp.open('GET', 'api.php?api=getBoard&bid=' + bid, true);
   xhttp.send();
@@ -202,6 +204,7 @@ function changeBoard(bid, popState=false) {
 
 //Set Active Board Btn
 function setActiveBoardBtn() {
+  boardsSelect.value = boardID || '';
   var menuBtns = boards.querySelectorAll('a');
   for(e of menuBtns) {
     if(e.search === '?b=' + boardID)
@@ -213,7 +216,7 @@ function setActiveBoardBtn() {
 
 
 //RENDER
-function render(bid, cards) {
+function render(cards) {
   main.innerHTML = '';
   lists.sort((a,b) => +a.ordr - b.ordr);
   listMax = 0;
