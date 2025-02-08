@@ -9,11 +9,14 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 
 /* HEAD */
 .head {color:var(--title);background-color:var(--menu-bg);border-bottom:1px solid var(--menu-border);}
-.menuBtn {background:none;border:none;padding:4px 10px 3px 10px;}
+.menuBtn {background:none;padding:4px 10px 3px 10px;}
 .menuBtn:hover {transform:scale(1.2);}
 .menuBtn svg {height:24px;width:24px;stroke:var(--title);}
 .head select {vertical-align:super;margin-left:12px;color:var(--text);background-color:#0003;padding:4px 8px;border-left:2px solid #33f;border-right:2px solid #b33;border-radius:24px;}
 .head select:hover {border-color:var(--accent);}
+.orientationBtn {float:right;padding:0 8px;background:none;}
+.orientationBtn svg {display:block;stroke:var(--title);height:34px;width:34px;}
+.orientationBtn:hover svg {stroke:var(--accent);}
 
 /* MENU */
 .menu {position:fixed;width:220px;padding-top:7px;overflow-y:auto;top:34px;bottom:0;left:0;word-break:break-all;text-align:center;z-index:1;background-color:var(--menu-bg);border-right:1px solid var(--menu-border);scrollbar-color:#0000 #0000 !important;transition:left ease .5s,scrollbar-color linear .5s;}
@@ -25,6 +28,7 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 
 /* MAIN CARDS */
 .main {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;position:absolute;top:35px;left:220px;right:0;bottom:0;padding:10px;background-size:cover;background-position:center;box-sizing:border-box;overflow-y:hidden;overflow-x:auto;scrollbar-width:thin;transition:left ease .5s;}
+.main.vertical {flex-wrap:wrap;row-gap:10px;overflow-y:auto;overflow-x:hidden;}
 .dragster {position:absolute;pointer-events:none;cursor:grabbing;contain:content;}
 .spacer {height:35px;}
 /* lists */

@@ -21,6 +21,8 @@ if(boardID)
   changeBoard(boardID, true);
 if(menuState !== 'open' && window.innerWidth > 1000)
   toggleMenu();
+if(getCookie('orientation'))
+  scrollOrientation();
 populateTagColors();
 
 
@@ -641,6 +643,20 @@ function toggleMenu() {
     setCookie('menuState', 'closed', false);
   else
     setCookie('menuState', '', true);
+}
+
+
+//Scroll Orientation
+function scrollOrientation() {
+  main.classList.toggle('vertical');
+  if(main.classList.contains('vertical')) {
+    orientationSvg.style.transform = 'rotate(90deg)';
+    setCookie('orientation', 'vertical', false);
+  }
+  else {
+    orientationSvg.style.transform = 'none';
+    setCookie('orientation', 'horizontal', true);
+  }
 }
 
 
