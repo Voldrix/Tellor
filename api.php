@@ -75,7 +75,6 @@ function newBoard() { //New Board
   global $scon;
   $bid = idGen32();
   $name = $_REQUEST['name'];
-  if(preg_match("/[\\\"<&]/", $name)) {http_response_code(400); return;}
 
   $sq = $scon->prepare('INSERT INTO boards(id,name,bgimg) VALUES(?,?,?)');
   $sq->bind_param('sss', $bid, $name, $_REQUEST['imgurl']);
@@ -90,7 +89,6 @@ function newBoard() { //New Board
 function editBoard() { //Edit Board
   global $scon;
   $name = $_REQUEST['name'];
-  if(preg_match("/[\\\"<&]/", $name)) {http_response_code(400); return;}
 
   $sq = $scon->prepare('UPDATE boards SET name=?,bgimg=? WHERE id=?');
   $sq->bind_param('sss', $name, $_REQUEST['imgurl'], $_REQUEST['bid']);

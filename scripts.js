@@ -94,11 +94,15 @@ function getBoards() {
     if(this.status === 200) {
       boardsJSON = JSON.parse(this.responseText);
       for(b of boardsJSON) {
-        let option = document.createElement("option");
+        let option = document.createElement("option"); //select menu option
         option.text = b.name;
         option.value = b.id;
         boardsSelect.appendChild(option);
-        boards.innerHTML += `<a href="?b=${b.id}" onclick="event.preventDefault();changeBoard('${b.id}')">${b.name}</a>`;
+        let menuBtn = document.createElement("a"); //side menu button
+        menuBtn.href = "?b=" + b.id;
+        menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+b.id+"')");
+        menuBtn.textContent = b.name;
+        boards.appendChild(menuBtn);
       }
       if(boardID) { //default board set, changeBoard will/has run
         currentBoard = boardsJSON.find(e => e.id === boardID);
@@ -120,7 +124,7 @@ function getBoards() {
 //NEW BOARD
 function newBoard() {
   var bname = newBoardName.value.trim();
-  if(!bname || ['\\','"','<','&'].some(char => bname.includes(char))) {alert('Invalid Board Name\nIllegal Char: \\ " < &'); return;}
+  if(!bname) return;
 
   var imgurl = newbgimgurl.value.trim();
   if(imgurl && !URL.canParse(imgurl)) {alert('Invalid URL'); return;}
@@ -128,18 +132,22 @@ function newBoard() {
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
-      let option = document.createElement("option");
+      let option = document.createElement("option"); //select menu option
       option.text = bname;
       option.value = this.responseText;
       boardsSelect.appendChild(option);
-      boards.innerHTML += `<a href="?b=${this.responseText}" onclick="event.preventDefault();changeBoard('${this.responseText}')">${bname}</a>`;
+      let menuBtn = document.createElement("a"); //side menu button
+      menuBtn.href = "?b=" + this.responseText;
+      menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+this.responseText+"')");
+      menuBtn.textContent = bname;
+      boards.appendChild(menuBtn);
       boardsJSON.push({id:this.responseText, name:bname, bgImg:imgurl});
       route('home');
       changeBoard(this.responseText);
     }
     else alert('Error: ' + this.status);
   }
-  xhttp.open('GET', 'api.php?api=newBoard&name=' + encodeURI(bname) + '&imgurl=' + encodeURIComponent(imgurl), true);
+  xhttp.open('GET', 'api.php?api=newBoard&name=' + encodeURIComponent(bname) + '&imgurl=' + encodeURIComponent(imgurl), true);
   xhttp.send();
 }
 
@@ -147,7 +155,7 @@ function newBoard() {
 //EDIT BOARD
 function editBoard() {
   var bname = boardName.value;
-  if(!bname || ['\\','"','<','&'].some(char => bname.includes(char))) {alert('Invalid Board Name\nIllegal Char: \\ " < &'); return;}
+  if(!bname) return;
 
   var imgurl = bgimgurl.value;
   if(imgurl && !URL.canParse(imgurl)) {alert('Invalid URL'); return;}
@@ -158,16 +166,16 @@ function editBoard() {
       currentBoard.name = bname;
       currentBoard.bgimg = imgurl;
       route('home');
-      var btn = boards.querySelector('a[href="?b='+boardID+'"');
+      var btn = boards.querySelector('a[href="?b='+boardID+'"'); //side menu button
       if(btn) btn.textContent = bname;
-      btn = boardsSelect.querySelector('option[value="'+boardID+'"');
+      btn = boardsSelect.querySelector('option[value="'+boardID+'"'); //select menu option
       if(btn) btn.textContent = bname;
       document.title = bname + ' | Tellor';
       main.style.backgroundImage = imgurl ? 'url(' + imgurl + ')' : null;
     }
     else alert('Error: ' + this.status);
   }
-  xhttp.open('GET', 'api.php?api=editBoard&bid=' + boardID + '&name=' + encodeURI(bname) + '&imgurl=' + encodeURIComponent(imgurl), true);
+  xhttp.open('GET', 'api.php?api=editBoard&bid=' + boardID + '&name=' + encodeURIComponent(bname) + '&imgurl=' + encodeURIComponent(imgurl), true);
   xhttp.send();
 }
 
@@ -649,14 +657,9 @@ function toggleMenu() {
 //Scroll Orientation
 function scrollOrientation() {
   main.classList.toggle('vertical');
-  if(main.classList.contains('vertical')) {
-    orientationSvg.style.transform = 'rotate(90deg)';
-    setCookie('orientation', 'vertical', false);
-  }
-  else {
-    orientationSvg.style.transform = 'none';
-    setCookie('orientation', 'horizontal', true);
-  }
+  var vertical = main.classList.contains('vertical');
+  orientationSvg.style.transform = vertical ? 'rotate(90deg)' : 'none';
+  setCookie('orientation', 'vertical', !vertical);
 }
 
 
