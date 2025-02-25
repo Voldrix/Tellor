@@ -44,7 +44,7 @@ function getBoards() { //Get Boards
 
 function getCard() { //Get Card
   global $scon;
-  $res = $scon->query('SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  $res = $scon->query('SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(!empty($res) && mysqli_num_rows($res) == 1) {
     $row = mysqli_fetch_assoc($res);
     echo json_encode($row);
@@ -60,7 +60,7 @@ function getBoard() { //Get Board (lists + cards)
     http_response_code(404);
     return;
   }
-  $resL = $scon->query('SELECT id,color,name,ordr FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
+  $resL = $scon->query('SELECT id,name,ordr,0 as "start",0 as "end" FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
   $resC = $scon->query('SELECT list,id,parent,title,tags,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $rowsL = mysqli_fetch_all($resL, MYSQLI_ASSOC);
   $rowsC = mysqli_fetch_all($resC, MYSQLI_ASSOC);
@@ -197,7 +197,7 @@ function delTag() { //Delete Tag
   global $scon;
   if($_SERVER['REQUEST_METHOD'] !== 'PUT') {http_response_code(400); return;}
   $color = $_REQUEST['color'];
-  $res = $scon->query('SELECT tags FROM cards WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  $res = $scon->query('SELECT tags FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(empty($res) || mysqli_num_rows($res) != 1) {
     http_response_code(404);
     return;
@@ -215,8 +215,8 @@ function delTag() { //Delete Tag
 function archiveCard() { //Archive Card
   global $scon;
   $res = $scon->query('UPDATE cards SET parent="'.$_REQUEST['pid'].'" WHERE board="'.$_REQUEST['bid'].'" AND parent="'.$_REQUEST['cardid'].'" LIMIT 1');
-  $res = $scon->query('INSERT INTO archive SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
-  $res = $scon->query('DELETE FROM cards WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  $res = $scon->query('INSERT INTO archive SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  $res = $scon->query('DELETE FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(!$res)
     http_response_code(500);
 }

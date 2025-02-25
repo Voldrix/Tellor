@@ -1,4 +1,4 @@
-var boardID, boardsJSON, currentBoard, tags, lists, activeCard, listMax;
+var boardsJSON, currentBoard, tags, lists, activeCard, listMax;
 var tagPalette = ['900', 'F80', 'DD0', '090', '0DD', '00B', '80F', 'F08', 'E0E', 'F8F', '000', 'FFF', '888'];
 
 const getCookie = (cookie) => (document.cookie.match('(^|;)\\s*'+cookie+'\\s*=\\s*([^;]+)')?.pop()||'');
@@ -187,16 +187,16 @@ function changeBoard(bid, popState=false) {
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
-      var _board = JSON.parse(this.responseText);
+      var board = JSON.parse(this.responseText);
       boardID = bid;
       if(boardsJSON) //skip only if getBoards has not loaded yet (race cond)
         currentBoard = boardsJSON.find(e => e.id === bid);
-      lists = _board.lists;
-      render(_board.cards);
+      lists = board.lists;
+      render(board.cards);
       setCookie('bid', bid, false);
       if(!popState)
         history.pushState(bid, '', '?b=' + bid);
-      delete _board.cards;
+      delete board.cards;
     }
     else {
       boardID = currentBoard = main.style.backgroundImage = null;
@@ -225,11 +225,39 @@ function setActiveBoardBtn() {
 }
 
 
+//Find Card
+function findCard(cards, pid, start, end) {
+  for(let i = start; i < end; i++) {
+    if(cards[i].parent === pid)
+      return cards[i];
+  }
+  return false;
+}
+
+
 //RENDER
 function render(cards) {
   main.innerHTML = '';
   lists.sort((a,b) => +a.ordr - b.ordr);
   listMax = 0;
+  if(currentBoard)
+    main.style.backgroundImage = currentBoard.bgimg ? 'url(' + currentBoard.bgimg + ')' : null;
+
+  //find list boundaries in cards list. this scales better than .find
+  var currentList, clID, clStart = 0;
+  for(let i = 0; i < cards.length; i++) {
+    if(cards[i].list !== clID) {
+      clStart = i;
+      clID = cards[i].list;
+      if(currentList)
+        currentList.end = i;
+      currentList = lists.find(e => e.id === clID);
+      currentList.start = clStart;
+    }
+  }
+  if(currentList)
+    currentList.end = cards.length;
+
   for(l of lists) { //iterate lists
     listMax = +l.ordr;
     let newList = document.createElement('div');
@@ -239,7 +267,7 @@ function render(cards) {
     main.appendChild(newList);
 
     let cardsContainer = document.getElementById('cc' + l.id);
-    let card = cards.find(e => (e.list === l.id && e.parent == 0)); //find first card
+    let card = findCard(cards, '0', l.start, l.end); //find first card
     while(card) {
       let newCard = document.createElement('div'); //card
       newCard.classList.add('card');
@@ -264,12 +292,11 @@ function render(cards) {
       newCard.append(card.title);
       cardsContainer.appendChild(newCard);
 
-      card = cards.find(e => e.parent === card.id); //find next card
+      card = findCard(cards, card.id, l.start, l.end); //find next card
     }
   }
+
   main.innerHTML += `<div class=newListContainer id=newListColumn>Add List<br><input type=text maxlength=1023 id=newListName placeholder="New List Name" onkeyup="if(event.key === 'Enter') addList()"><br><button id=newListBtn onclick=addList()>Add List</button></div>`;
-  if(currentBoard)
-    main.style.backgroundImage = currentBoard.bgimg ? 'url(' + currentBoard.bgimg + ')' : null;
 }
 
 
@@ -353,9 +380,10 @@ function closeCard() {
 function viewCard(cardID) {
   route('viewCard');
 
-  var _card = document.getElementById(cardID);
-  cardTitle.innerText = _card.textContent; //get title from card tile
+  var card = document.getElementById(cardID);
+  cardTitle.innerText = card.textContent; //get title from card tile
   cardDescTA.value = cardDescDiv.innerHTML = ''; //clear description
+  var listID = card.parentElement.id.substring(2);
   var cardTags = document.getElementById('tags' + cardID); //get tags from card tile
   var _tags = [...cardTags.children].map(e => e.attributes.color.value);
   if(_tags && _tags != 0) {
@@ -378,11 +406,11 @@ function viewCard(cardID) {
     }
   }
 
-  if(_card.classList.contains('hasDescription')) { //only call db if card has a description
-    xhttp.open('GET', 'api.php?api=getCard&bid=' + boardID + '&cardid=' + cardID, true);
+  if(card.classList.contains('hasDescription')) { //only call db if card has a description
+    xhttp.open('GET', 'api.php?api=getCard&bid=' + boardID + '&listid=' + listID + '&cardid=' + cardID, true);
     xhttp.send();
   }
-  activeCard = {id: cardID, title: _card.textContent, description: ''};
+  activeCard = {id: cardID, title: card.textContent, description: ''};
 }
 
 
@@ -507,6 +535,7 @@ function delTag(elem, color) {
   var card = document.getElementById(activeCard.id);
   var colorTag = card.querySelector('div[color="'+color+'"]');
   if(!colorTag) return;
+  var listID = card.parentElement.id.substring(2);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
@@ -517,7 +546,7 @@ function delTag(elem, color) {
     }
     else alert('Error: ' + this.status);
   }
-  xhttp.open('PUT', 'api.php?api=delTag&bid=' + boardID + '&cardid=' + activeCard.id + '&color=' + color, true);
+  xhttp.open('PUT', 'api.php?api=delTag&bid=' + boardID + '&listid=' + listID + '&cardid=' + activeCard.id + '&color=' + color, true);
   xhttp.send();
 }
 
@@ -528,9 +557,9 @@ function renameList(titleElem) {
   var listTitle = titleElem.innerText.trim();
   listTitle = listTitle.replaceAll('<', '&lt;');
   var listID = titleElem.parentElement.id;
-  var _list = lists.find(e => e.id === listID);
+  var list = lists.find(e => e.id === listID);
   if(!listTitle) {
-    titleElem.innerText = _list.name;
+    titleElem.innerText = list.name;
     return;
   }
   if(listTitle.length > 1023) {
@@ -541,14 +570,14 @@ function renameList(titleElem) {
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
-      _list.name = listTitle;
+      list.name = listTitle;
     }
     else {
-      titleElem.innerText = _list.name;
+      titleElem.innerText = list.name;
       alert('Error: ' + this.status);
     }
   }
-  if(listTitle !== _list.name) { //only save if name changed
+  if(listTitle !== list.name) { //only save if name changed
     xhttp.open('GET', 'api.php?api=renameList&bid=' + boardID + '&lid=' + listID + '&title=' + encodeURIComponent(listTitle), true);
     xhttp.send();
   }
@@ -559,9 +588,9 @@ function renameList(titleElem) {
 function moveList(listTitle, direction) {
   if(!listTitle || !direction) return;
 
-  var _listContainer = listTitle.parentElement;
-  var swap = (direction === 'right') ? _listContainer.nextElementSibling : _listContainer.previousElementSibling;
-  if(!swap || !swap.classList.contains('list') || !_listContainer.classList.contains('list')) return;
+  var listContainer = listTitle.parentElement;
+  var swap = (direction === 'right') ? listContainer.nextElementSibling : listContainer.previousElementSibling;
+  if(!swap || !swap.classList.contains('list') || !listContainer.classList.contains('list')) return;
 
   var swapTitle = swap.firstChild;
   var swapOrdr = swapTitle.getAttribute('ordr');
@@ -571,7 +600,7 @@ function moveList(listTitle, direction) {
   listTitle.setAttribute('ordr', swapOrdr);
   swapTitle.setAttribute('ordr', listOrdr);
   var swapDir = (direction === 'right') ? 'beforebegin' : 'afterend';
-  _listContainer.insertAdjacentElement(swapDir, swap);
+  listContainer.insertAdjacentElement(swapDir, swap);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
@@ -579,7 +608,7 @@ function moveList(listTitle, direction) {
       listTitle.setAttribute('ordr', listOrdr);
       swapTitle.setAttribute('ordr', swapOrdr);
       swapDir = (direction !== 'right') ? 'beforebegin' : 'afterend';
-      _listContainer.insertAdjacentElement(swapDir, swap);
+      listContainer.insertAdjacentElement(swapDir, swap);
     }
   }
   xhttp.open('GET', 'api.php?api=moveList&bid=' + boardID + '&lid1=' + listTitle.id + '&lid2=' + swapTitle.id + '&ordr1='  + listOrdr + '&ordr2=' + swapOrdr, true);
@@ -610,18 +639,19 @@ function deleteList(titleElem) {
 //ARCHIVE CARD
 function archiveCard() {
   if(!activeCard || activeCard.id === 'new') return;
-  var _card = document.getElementById(activeCard.id);
-  if(!_card) return;
-  var pid = _card.previousElementSibling ? _card.previousElementSibling.id : '0';
+  var card = document.getElementById(activeCard.id);
+  if(!card) return;
+  var pid = card.previousElementSibling ? card.previousElementSibling.id : '0';
+  var listID = card.parentElement.id.substring(2);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
-      _card.remove();
+      card.remove();
     }
-    else viewCard(_card.id);
+    else viewCard(card.id);
   }
-  xhttp.open('GET', 'api.php?api=archiveCard&bid=' + boardID + '&cardid=' + activeCard.id + '&pid=' + pid, true);
+  xhttp.open('GET', 'api.php?api=archiveCard&bid=' + boardID + '&listid=' + listID + '&cardid=' + activeCard.id + '&pid=' + pid, true);
   xhttp.send();
   route('home');
 }
