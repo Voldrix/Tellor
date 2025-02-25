@@ -1,4 +1,4 @@
-var boardsJSON, currentBoard, tags, lists, activeCard, listMax;
+var boardsJSON, currentBoard, tags, lists, activeCard, listMax, defaultTextColor = '#f0f0f0';
 var tagPalette = ['900', 'F80', 'DD0', '090', '0DD', '00B', '80F', 'F08', 'E0E', 'F8F', '000', 'FFF', '888'];
 
 const getCookie = (cookie) => (document.cookie.match('(^|;)\\s*'+cookie+'\\s*=\\s*([^;]+)')?.pop()||'');
@@ -263,7 +263,7 @@ function render(cards) {
     let newList = document.createElement('div');
     newList.classList.add('list');
     newList.setAttribute('ondrop', "dragDrop(event)");
-    newList.innerHTML = `<div class=listTitle id=${l.id} ordr=${l.ordr} style="background:#${l.color};"><div class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${l.name}</div><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${l.id}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${l.id}')>+ Add Card</div>`;
+    newList.innerHTML = `<div class=listTitle id=${l.id} ordr=${l.ordr}><div class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${l.name}</div><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${l.id}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${l.id}')>+ Add Card</div>`;
     main.appendChild(newList);
 
     let cardsContainer = document.getElementById('cc' + l.id);
@@ -274,6 +274,8 @@ function render(cards) {
       newCard.id = card.id;
       if(card.description)
         newCard.classList.add('hasDescription');
+      if(card.color)
+        newCard.style.color = card.color;
       newCard.setAttribute('onclick', "viewCard('"+card.id+"')");
       newCard.setAttribute('draggable', true); newCard.setAttribute('ondragstart', "dragStart(event)"); newCard.setAttribute('ondragend', "dragEnd(event)"); newCard.setAttribute('ondragenter', "dragEnter(event)");
       let tagsDiv = document.createElement('div'); //tags
@@ -281,10 +283,10 @@ function render(cards) {
       tagsDiv.classList.add('tags');
       let _tags = card.tags?.split(' '); //color tags
       if(_tags &&_tags != 0 && _tags[0] != '') {
-        for(t of _tags) {
+        for(tagColor of _tags) {
           let colorTag = document.createElement('div');
-          colorTag.style.background = '#'+t;
-          colorTag.setAttribute('color', t);
+          colorTag.style.background = '#'+tagColor;
+          colorTag.setAttribute('color', tagColor);
           tagsDiv.appendChild(colorTag);
         }
       }
@@ -384,13 +386,15 @@ function viewCard(cardID) {
   cardTitle.innerText = card.textContent; //get title from card tile
   cardDescTA.value = cardDescDiv.innerHTML = ''; //clear description
   var listID = card.parentElement.id.substring(2);
+  var color = card.style.color ? rgb2hex(card.style.color) : defaultTextColor; //card text color
+  cardTextColorPicker.value = color;
   var cardTags = document.getElementById('tags' + cardID); //get tags from card tile
   var _tags = [...cardTags.children].map(e => e.attributes.color.value);
   if(_tags && _tags != 0) {
-    for(color of _tags) {
+    for(tagColor of _tags) {
       var newTag = document.createElement('div');
-      newTag.style.background = '#'+color;
-      newTag.setAttribute('onclick', "delTag(this,'"+color+"')");
+      newTag.style.background = '#'+tagColor;
+      newTag.setAttribute('onclick', "delTag(this,'"+tagColor+"')");
       addTagBtn.insertAdjacentElement('beforebegin', newTag);
     }
   }
@@ -398,7 +402,7 @@ function viewCard(cardID) {
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
     if(this.status === 200) {
-      activeCard.description = JSON.parse(this.responseText)?.description;
+      activeCard.description = JSON.parse(this.responseText).description;
       if(activeCard.description) {
         cardDescTA.value = activeCard.description;
         parseDescription();
@@ -410,7 +414,7 @@ function viewCard(cardID) {
     xhttp.open('GET', 'api.php?api=getCard&bid=' + boardID + '&listid=' + listID + '&cardid=' + cardID, true);
     xhttp.send();
   }
-  activeCard = {id: cardID, title: card.textContent, description: ''};
+  activeCard = {id: cardID, title: card.textContent, color: color, list: listID, description: ''};
 }
 
 
@@ -439,7 +443,7 @@ function saveCard() {
       setTimeout(saveCard, 100);
       return;
     }
-    xhttp.open('POST', 'api.php?api=saveCard&bid=' + boardID + '&cardid=' + activeCard.id + '&title=' + encodeURIComponent(title), true);
+    xhttp.open('POST', 'api.php?api=saveCard&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&title=' + encodeURIComponent(title), true);
     xhttp.send(cardDescTA.value);
 
     if(cardDescTA.value) card.classList.add('hasDescription');
@@ -524,7 +528,7 @@ function addTag(color) {
       addTagBox.style.height = 0;
     }
   }
-  xhttp.open('GET', 'api.php?api=addTag&bid=' + boardID + '&cardid=' + activeCard.id + '&color=' + color, true);
+  xhttp.open('GET', 'api.php?api=addTag&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&color=' + color, true);
   xhttp.send();
 }
 
@@ -535,7 +539,6 @@ function delTag(elem, color) {
   var card = document.getElementById(activeCard.id);
   var colorTag = card.querySelector('div[color="'+color+'"]');
   if(!colorTag) return;
-  var listID = card.parentElement.id.substring(2);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
@@ -546,7 +549,7 @@ function delTag(elem, color) {
     }
     else alert('Error: ' + this.status);
   }
-  xhttp.open('PUT', 'api.php?api=delTag&bid=' + boardID + '&listid=' + listID + '&cardid=' + activeCard.id + '&color=' + color, true);
+  xhttp.open('PUT', 'api.php?api=delTag&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&color=' + color, true);
   xhttp.send();
 }
 
@@ -578,7 +581,7 @@ function renameList(titleElem) {
     }
   }
   if(listTitle !== list.name) { //only save if name changed
-    xhttp.open('GET', 'api.php?api=renameList&bid=' + boardID + '&lid=' + listID + '&title=' + encodeURIComponent(listTitle), true);
+    xhttp.open('GET', 'api.php?api=renameList&bid=' + boardID + '&listid=' + listID + '&title=' + encodeURIComponent(listTitle), true);
     xhttp.send();
   }
 }
@@ -630,9 +633,29 @@ function deleteList(titleElem) {
   }
 
   if(confirm('Delete List and all cards in it?\n' + titleElem.firstChild.textContent)) {
-    xhttp.open('PUT', 'api.php?api=deleteList&bid=' + boardID + '&lid=' + listID, true);
+    xhttp.open('PUT', 'api.php?api=deleteList&bid=' + boardID + '&listid=' + listID, true);
     xhttp.send();
   }
+}
+
+
+//CARD COLOR
+function cardColor(color=false) {
+  color = color ? defaultTextColor : cardTextColorPicker.value;
+  if(color === activeCard.color)
+    return;
+  var card = document.getElementById(activeCard.id);
+  card.style.color = cardTextColorPicker.value = color;
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onloadend = function() {
+    if(this.status === 200)
+      activeCard.color = color;
+    else
+      card.style.color = cardTextColorPicker.value = activeCard.color;
+  }
+  xhttp.open('GET', 'api.php?api=cardColor&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&color=' + encodeURIComponent(color), true);
+  xhttp.send();
 }
 
 
@@ -642,7 +665,6 @@ function archiveCard() {
   var card = document.getElementById(activeCard.id);
   if(!card) return;
   var pid = card.previousElementSibling ? card.previousElementSibling.id : '0';
-  var listID = card.parentElement.id.substring(2);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onloadend = function() {
@@ -651,10 +673,13 @@ function archiveCard() {
     }
     else viewCard(card.id);
   }
-  xhttp.open('GET', 'api.php?api=archiveCard&bid=' + boardID + '&listid=' + listID + '&cardid=' + activeCard.id + '&pid=' + pid, true);
+  xhttp.open('GET', 'api.php?api=archiveCard&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&pid=' + pid, true);
   xhttp.send();
   route('home');
 }
+
+
+const rgb2hex = (rgb) => '#' + rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/).slice(1).map((n) => parseFloat(n).toString(16).padStart(2,'0')).join('');
 
 
 //Populate Tag Colors

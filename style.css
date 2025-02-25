@@ -99,6 +99,7 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 #addTagBox div:hover {transform:skewX(135deg) scaleY(cos(135deg)) scale(1.25);z-index:1;}
 
 /* MISC */
+#cardTextColorPicker {float:right;height:16px;width:24px;cursor:pointer;transform:skewX(45deg) scaleY(cos(45deg));}
 #loader {display:none;width:40px;height:40px;border-radius:50%;border-top:3px solid #FFF;border-right:3px solid transparent;animation:rotation 1s linear infinite;}
 @keyframes rotation {0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);}}
 

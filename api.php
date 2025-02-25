@@ -22,6 +22,7 @@ switch ($_REQUEST['api']) {
   case 'moveCard': moveCard(); break;
   case 'deleteList': deleteList(); break;
   case 'delTag': delTag(); break;
+  case 'cardColor': cardColor(); break;
   case 'archiveCard': archiveCard(); break;
   case 'deleteBoard': deleteBoard(); break;
   case 'export': export(); break;
@@ -61,7 +62,7 @@ function getBoard() { //Get Board (lists + cards)
     return;
   }
   $resL = $scon->query('SELECT id,name,ordr,0 as "start",0 as "end" FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
-  $resC = $scon->query('SELECT list,id,parent,title,tags,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
+  $resC = $scon->query('SELECT list,id,parent,title,tags,color,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $rowsL = mysqli_fetch_all($resL, MYSQLI_ASSOC);
   $rowsC = mysqli_fetch_all($resC, MYSQLI_ASSOC);
   $res = new stdClass();
@@ -115,7 +116,7 @@ function addList() { //Add List
 
 function renameList() { //Rename List
   global $scon;
-  $sq = $scon->prepare('UPDATE lists SET name=? WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['lid'].'" LIMIT 1');
+  $sq = $scon->prepare('UPDATE lists SET name=? WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['listid'].'" LIMIT 1');
   $sq->bind_param('s', $_REQUEST['title']);
   $sq->execute();
   $sq->close();
@@ -146,7 +147,7 @@ function addTag() { //Add Tag
   global $scon;
   $color = $_REQUEST['color'];
   if(preg_match("/^[a-zA-Z0-9]{3,6}$/", $color)) {
-    $res = $scon->query('UPDATE cards SET tags=CONCAT_WS(" ", tags, "'.$color.'") WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+    $res = $scon->query('UPDATE cards SET tags=CONCAT_WS(" ", tags, "'.$color.'") WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
     if(!$res) http_response_code(500);
   }
   else http_response_code(400);
@@ -157,8 +158,8 @@ function saveCard() { //Save Card
   global $scon;
   if($_SERVER['REQUEST_METHOD'] !== 'POST') {http_response_code(400); return;}
   $desc = file_get_contents('php://input') ?: null;
-  $sq = $scon->prepare('UPDATE cards SET title=?,description=? WHERE board=? AND id=? LIMIT 1');
-  $sq->bind_param('ssss', $_REQUEST['title'], $desc, $_REQUEST['bid'], $_REQUEST['cardid']);
+  $sq = $scon->prepare('UPDATE cards SET title=?,description=? WHERE board=? AND list=? AND id=? LIMIT 1');
+  $sq->bind_param('sssss', $_REQUEST['title'], $desc, $_REQUEST['bid'], $_REQUEST['listid'], $_REQUEST['cardid']);
   $sq->execute();
   $sq->close();
 
@@ -186,9 +187,9 @@ function moveCard() { //Move Card
 function deleteList() { //Delete List
   global $scon;
   if($_SERVER['REQUEST_METHOD'] !== 'PUT') {http_response_code(400); return;}
-  $res = $scon->query('INSERT INTO archive SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['lid'].'"');
-  $res = $scon->query('DELETE FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['lid'].'"');
-  $res = $scon->query('DELETE FROM lists WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['lid'].'"');
+  $res = $scon->query('INSERT INTO archive SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'"');
+  $res = $scon->query('DELETE FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'"');
+  $res = $scon->query('DELETE FROM lists WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['listid'].'"');
   if(!$res) http_response_code(500);
 }
 
@@ -208,6 +209,14 @@ function delTag() { //Delete Tag
   $tag = empty($tag) ? 'null' : '"'.$tag.'"';
 
   $res = $scon->query('UPDATE cards SET tags='.$tag.' WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  if(!$res) http_response_code(500);
+}
+
+
+function cardColor() { //Card Color
+  global $scon;
+  $color = (empty($_REQUEST['color']) || $_REQUEST['color'] === '#f0f0f0') ? 'null' : '"'.$_REQUEST['color'].'"';
+  $res = $scon->query('UPDATE cards SET color='.$color.' WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(!$res) http_response_code(500);
 }
 
@@ -241,7 +250,7 @@ function export() { //Export Board
   }
   $data = (object)mysqli_fetch_assoc($res);
   $resL = $scon->query('SELECT id,color,name,ordr FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
-  $resC = $scon->query('SELECT list,id,parent,title,tags,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
+  $resC = $scon->query('SELECT list,id,parent,title,tags,color,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $rowsL = mysqli_fetch_all($resL, MYSQLI_ASSOC);
   $rowsC = mysqli_fetch_all($resC, MYSQLI_ASSOC);
   $data->lists = $rowsL;
@@ -278,9 +287,9 @@ function importTellor($data) { //Import Tellor
     $sq->execute();
   }
   $sq->close();
-  $sq = $scon->prepare('INSERT INTO cards VALUES(?,?,?,?,?,?,?,?,?)');
+  $sq = $scon->prepare('INSERT INTO cards VALUES(?,?,?,?,?,?,?,?,?,?)');
   foreach($data->cards as $card) {
-    $sq->bind_param('sssssssss', $data->id, $card->list, $card->id, $card->parent, $card->title, $card->tags, $card->cdate, $card->mdate, $card->description);
+    $sq->bind_param('ssssssssss', $data->id, $card->list, $card->id, $card->parent, $card->title, $card->tags, $card->color, $card->cdate, $card->mdate, $card->description);
     $sq->execute();
   }
   $sq->close();
@@ -299,7 +308,7 @@ function importTrello($data) { //Import Trello
 
   usort($data->cards, function($a, $b) {return $a->pos - $b->pos;});
 
-  $sqlCards = $scon->prepare('INSERT INTO cards VALUES(?,?,?,?,?,?,default,?,?)');
+  $sqlCards = $scon->prepare('INSERT INTO cards VALUES(?,?,?,?,?,?,null,default,?,?)');
   $sqlLists = $scon->prepare('INSERT INTO lists(board,id,color,name,ordr) VALUES(?,?,?,?,?)');
 
   foreach($data->lists as $list) {
