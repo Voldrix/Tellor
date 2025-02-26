@@ -76,7 +76,7 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 
 /* VIEW CARD DETAILS */
 .viewCardBox {display:none;width:768px;max-width:90vw;padding:6px 12px;background-color:#282E33;border-radius:9px;}
-.cardTitle {display:block;font-size:16px;line-height:22px;margin-bottom:10px;padding:6px;border-radius:7px;background:none;}
+.cardTitle {display:block;font-size:16px;line-height:22px;margin-bottom:10px;padding:4px 4px 6px 4px;border-radius:7px;background:none;}
 .cardTitle:focus {background-color:#1a1e22;outline:1px solid var(--accent);}
 .cardDescription {display:none;font-family:monospace;line-height:16px;min-height:130px;width:100%;padding:4px;color:var(--text);background:#343a3f;border:1px solid #21272c;overflow-wrap:break-word;box-sizing:border-box;white-space:pre-wrap;}
 .saveDescriptionBtns {display:none;}
@@ -92,14 +92,15 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 
 /* TAGS */
 .tags {padding:2px 4px;line-height:0;pointer-events:none;}
-.tags div {display:inline-block;width:60px;height:8px;transform:skewX(135deg) scaleY(cos(135deg));}
-#tagsBox div, #tagsBox button {display:inline-block;height:18px;width:48px;vertical-align:top;transform:skewX(135deg) scaleY(cos(135deg));cursor:pointer;}
-#addTagBox {display:flex;flex-flow:row nowrap;height:0;}
-#addTagBox div {flex:1 1 7.69%;transform:skewX(135deg) scaleY(cos(135deg));cursor:pointer;}
-#addTagBox div:hover {transform:skewX(135deg) scaleY(cos(135deg)) scale(1.25);z-index:1;}
+.tags div {display:inline-block;width:60px;height:5px;margin:2px 0 1px 0;transform:skewX(135deg);}
+#tagsBox {margin-top:2px;}
+#tagsBox div, #tagsBox button {display:inline-block;position:relative;height:13px;width:48px;line-height:0;vertical-align:top;cursor:pointer;transform:skewX(135deg);}
+#addTagBox {display:flex;flex-flow:row nowrap;height:0;margin-bottom:12px;}
+#addTagBox div {flex:1 1 7.69%;cursor:pointer;transform:skewX(135deg);}
+#tagsBox div:hover, #tagsBox button:hover, #addTagBox div:hover {z-index:1;scale:1.25;}
+#cardTextColorPicker {float:right;height:13px;width:32px;cursor:pointer;transform:skewX(45deg);}
 
 /* MISC */
-#cardTextColorPicker {float:right;height:16px;width:24px;cursor:pointer;transform:skewX(45deg) scaleY(cos(45deg));}
 #loader {display:none;width:40px;height:40px;border-radius:50%;border-top:3px solid #FFF;border-right:3px solid transparent;animation:rotation 1s linear infinite;}
 @keyframes rotation {0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);}}
 

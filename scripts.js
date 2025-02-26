@@ -695,7 +695,7 @@ function populateTagColors() {
 
 //Show Tags
 function showTags() {
-  addTagBox.style.height = (addTagBox.style.height != '18px') ? '18px' : 0;
+  addTagBox.style.height = (addTagBox.style.height != '13px') ? '13px' : 0;
 }
 
 

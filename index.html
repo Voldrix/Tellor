@@ -78,7 +78,7 @@
   <div class=cardTitle maxlength=1023 id=cardTitle contenteditable=true autocorrect=off spellcheck=false onblur=saveCard()></div>
   Tags<input type=color id=cardTextColorPicker value="#f0f0f0" onchange=cardColor() oncontextmenu="event.preventDefault();cardColor('default')"><br>
   <div id=tagsBox><button id=addTagBtn onclick=showTags()>+</button></div>
-  <div id=addTagBox></div><br>
+  <div id=addTagBox></div>
   Description<br>
   <div id=cardDescDiv class=cardDescription onclick=editDescription(event)></div>
   <textarea id=cardDescTA class=cardDescription autocorrect=off spellcheck=false maxlength=1023 oninput="this.style.height=0;this.style.height=this.scrollHeight+2+'px'" onblur=doneEditDescription()></textarea>

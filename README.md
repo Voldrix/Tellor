@@ -4,9 +4,8 @@ __Minimalist single-user (no auth) kanban todo app__
 [Live Demo](https://voldrixia.com/tellor/?b=18486f63be6bb5f2)
 
 ## Features
-- Loads fast. Lightweight
-- Controls are snappy
-- Compact, minimal UI
+- Loads fast. Lightweight. Snappy controls
+- Clean and compact UI
 - Single-user design. No authentication.
 - Import boards from Trello
 - Mobile friendly
@@ -24,7 +23,7 @@ mysql / mariadb
 - _(optional)_ Copy DB creds into `api.php` line 6
 - Run `./setup-db.sh` as root to create database
 
-There are default credentials, so steps 2 and 3 are optional
+There are default credentials, so steps 2 and 3 are optional.
 
 ### Import / Export
 

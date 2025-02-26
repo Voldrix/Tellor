@@ -208,7 +208,7 @@ function delTag() { //Delete Tag
   $tag = trim($tag);
   $tag = empty($tag) ? 'null' : '"'.$tag.'"';
 
-  $res = $scon->query('UPDATE cards SET tags='.$tag.' WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  $res = $scon->query('UPDATE cards SET tags='.$tag.' WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(!$res) http_response_code(500);
 }
 
@@ -223,8 +223,8 @@ function cardColor() { //Card Color
 
 function archiveCard() { //Archive Card
   global $scon;
-  $res = $scon->query('UPDATE cards SET parent="'.$_REQUEST['pid'].'" WHERE board="'.$_REQUEST['bid'].'" AND parent="'.$_REQUEST['cardid'].'" LIMIT 1');
   $res = $scon->query('INSERT INTO archive SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  $res = $scon->query('UPDATE cards SET parent="'.$_REQUEST['pid'].'" WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND parent="'.$_REQUEST['cardid'].'" LIMIT 1');
   $res = $scon->query('DELETE FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(!$res)
     http_response_code(500);
