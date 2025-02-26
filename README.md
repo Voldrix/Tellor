@@ -5,7 +5,7 @@ __Minimalist single-user (no auth) kanban todo app__
 
 ## Features
 - Loads fast. Lightweight. Snappy controls
-- Clean and compact UI
+- Clean and Compact UI
 - Single-user design. No authentication.
 - Import boards from Trello
 - Mobile friendly
@@ -15,7 +15,7 @@ __Minimalist single-user (no auth) kanban todo app__
 ### Requirements (LAMP)
 Apache / Nginx\
 PHP 7+\
-mysql / mariadb
+MySQL / MariaDB
 
 ### Setup
 - Clone repo into web directory
