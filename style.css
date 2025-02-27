@@ -75,13 +75,13 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 #delChk {accent-color:#911;}
 
 /* VIEW CARD DETAILS */
-.viewCardBox {display:none;width:768px;max-width:90vw;padding:6px 12px;background-color:#282E33;border-radius:9px;}
+.viewCardBox {display:none;flex-flow:column nowrap;width:768px;max-width:90vw;max-height:97vh;padding:6px 12px;background-color:#282E33;border-radius:9px;}
 .cardTitle {display:block;font-size:16px;line-height:22px;margin-bottom:10px;padding:4px 4px 6px 4px;border-radius:7px;background:none;}
 .cardTitle:focus {background-color:#1a1e22;outline:1px solid var(--accent);}
-.cardDescription {display:none;font-family:monospace;line-height:16px;min-height:130px;width:100%;padding:4px;color:var(--text);background:#343a3f;border:1px solid #21272c;overflow-wrap:break-word;box-sizing:border-box;white-space:pre-wrap;}
+.cardDescription {display:none;font-family:monospace;line-height:16px;min-height:130px;width:100%;padding:4px;color:var(--text);background:#343a3f;overflow-y:auto;border:1px solid #21272c;overflow-wrap:break-word;box-sizing:border-box;white-space:pre-wrap;}
 .saveDescriptionBtns {display:none;}
 #cardDescTA:focus {outline:2px solid var(--accent);}
-#cardDescTA:focus + .saveDescriptionBtns, .saveDescriptionBtns:hover {display:inline-block;}
+#cardDescTA:focus + div .saveDescriptionBtns, .saveDescriptionBtns:hover {display:inline-block;}
 .saveDescriptionBtns {margin-top:6px;}
 #sav {color:var(--accent);font-size:16px;line-height:18px;padding:5px 10px;margin-right:8px;border:2px solid var(--accent);border-radius:7px;background:none;}
 #sav:hover {color:#000;background:var(--accent);}
@@ -97,8 +97,8 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 #tagsBox div, #tagsBox button {display:inline-block;position:relative;height:13px;width:48px;line-height:0;vertical-align:top;cursor:pointer;transform:skewX(135deg);}
 #addTagBox {display:flex;flex-flow:row nowrap;height:0;margin-bottom:12px;}
 #addTagBox div {flex:1 1 7.69%;cursor:pointer;transform:skewX(135deg);}
-#tagsBox div:hover, #tagsBox button:hover, #addTagBox div:hover {z-index:1;scale:1.25;}
 #cardTextColorPicker {float:right;height:13px;width:32px;cursor:pointer;transform:skewX(45deg);}
+#tagsBox div:hover, #tagsBox button:hover, #addTagBox div:hover, #cardTextColorPicker:hover {z-index:1;scale:1.25;}
 
 /* MISC */
 #loader {display:none;width:40px;height:40px;border-radius:50%;border-top:3px solid #FFF;border-right:3px solid transparent;animation:rotation 1s linear infinite;}

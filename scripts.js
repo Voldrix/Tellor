@@ -78,7 +78,7 @@ function route(_route) {
   }
   if(_route === 'viewCard') {
     popupBG.style.display = 'flex';
-    viewCardBox.style.display = 'block';
+    viewCardBox.style.display = 'flex';
     tagsBox.innerHTML = '<button id=addTagBtn onclick=showTags()>+</button>';
     cardDescTA.style.display = 'none';
     cardDescDiv.style.display = 'block';
