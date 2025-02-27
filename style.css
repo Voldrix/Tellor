@@ -29,11 +29,10 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 /* MAIN CARDS */
 .main {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;position:absolute;top:35px;left:220px;right:0;bottom:0;padding:10px;background-size:cover;background-position:center;box-sizing:border-box;overflow-y:hidden;overflow-x:auto;scrollbar-width:thin;transition:left ease .5s;}
 .main.vertical {flex-wrap:wrap;row-gap:10px;overflow-y:auto;overflow-x:hidden;}
-.dragster {position:absolute;pointer-events:none;cursor:grabbing;contain:content;}
-.spacer {height:35px;}
+.dragster {position:absolute;pointer-events:none;contain:content;}
 /* lists */
 .list {display:flex;flex-flow:column nowrap;flex:0 0 284px;width:284px;max-height:100%;margin-right:10px;padding:5px 0;background-color:#101204;border-radius:9px;box-sizing:border-box;contain:content;}
-.listTitle {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;margin:0 8px 3px 8px;}
+.listTitle {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;margin:0 8px 4px 8px;}
 .listTitle .listName {flex:1 1 50%;padding:0 0 2px 2px;margin-right:5px;border-radius:6px;white-space:pre-wrap;}
 .listTitle .listName:focus {outline:2px solid var(--accent);outline-offset:2px;}
 .moveListBtn, .deleteListBtn {color:#bbb;background:none;font-size:18px;line-height:18px;}
@@ -46,14 +45,10 @@ h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:
 #newListBtn:hover {background:#0002;}
 
 /* cards */
-.cardContainer {padding:0 8px;overflow-y:auto;scrollbar-width:thin;}
+.cardContainer {padding:0 8px;min-height:12px;margin:-6px 0;overflow-y:auto;scrollbar-width:thin;}
 .card {background-color:#22272B;border-radius:7px;margin:6px 0;padding:0 8px 6px 8px;box-sizing:border-box;white-space:pre-wrap;cursor:pointer;}
-.card:first-child {margin-top:0;}
-.card:last-child {margin-bottom:0;}
-.xxx {box-shadow:0px 1px 1px #091e4240, 0px 0px 1px #091e424f;box-shadow:0 0 0 1px #000, 0 1px 1px #03040480, 0 0 1px #03040480;}
-.card:hover {background-color:#2a2e32;}
 .addCardBtn {border-radius:7px;margin:4px 8px 0 8px;padding:1px 6px;cursor:pointer;}
-.addCardBtn:hover {background-color:#282C30;}
+.card:hover, .addCardBtn:hover {background-color:#2a2e32;}
 .hasDescription {border-left:4px solid var(--accent);}
 
 /* POPUPS */

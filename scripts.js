@@ -750,19 +750,20 @@ function importBoard() {
 
 //DRAG DROP
 var offsetX, offsetY, draggedCard, dragster, spacer = document.createElement('div');
-spacer.classList.add('spacer');
+spacer.style.margin = '6px 0';
 
 function dragStart(e) {
   draggedCard = e.target;
-  dragster = e.target.cloneNode(true);
+  dragster = draggedCard.cloneNode(true);
   dragster.classList.add('dragster');
   document.body.appendChild(dragster);
   dragster.style.width = e.target.getBoundingClientRect().width  + 'px';
   spacer.style.height = e.target.getBoundingClientRect().height  + 'px';
   offsetX = e.pageX - e.target.getBoundingClientRect().x;
   offsetY = e.pageY - e.target.getBoundingClientRect().y;
-  dragster.style.top = (e.pageY - offsetY) + 'px';
+  dragster.style.top = (e.pageY - offsetY - 6) + 'px';
   dragster.style.left = (e.pageX - offsetX) + 'px';
+  draggedCard.insertAdjacentElement('beforebegin', spacer);
   draggedCard.style.display = 'none';
 }
 function dragEnd(e) {
@@ -783,7 +784,7 @@ function dragOverNewCardBtn(e) {
 }
 function dragOver(e) {
   e.preventDefault();
-  dragster.style.top = (e.pageY - offsetY) + 'px';
+  dragster.style.top = (e.pageY - offsetY - 6) + 'px';
   dragster.style.left = (e.pageX - offsetX) + 'px';
 }
 
