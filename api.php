@@ -250,7 +250,7 @@ function export() { //Export Board
     return;
   }
   $data = (object)mysqli_fetch_assoc($res);
-  $resL = $scon->query('SELECT id,color,name,ordr FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
+  $resL = $scon->query('SELECT id,ordr,name FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
   $resC = $scon->query('SELECT list,id,parent,title,tags,color,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $rowsL = mysqli_fetch_all($resL, MYSQLI_ASSOC);
   $rowsC = mysqli_fetch_all($resC, MYSQLI_ASSOC);
@@ -281,9 +281,9 @@ function importTellor($data) { //Import Tellor
   $res = $scon->query('INSERT INTO boards(id,name,bgimg) VALUES("'.$data->id.'","'.$data->name.'","'.$data->bgimg.'")');
   if(!$res) {http_response_code(500); return;}
 
-  $sq = $scon->prepare('INSERT INTO lists(board,id,color,name,ordr) VALUES(?,?,?,?,?)');
+  $sq = $scon->prepare('INSERT INTO lists(board,id,ordr,name) VALUES(?,?,?,?)');
   foreach($data->lists as $list) {
-    $sq->bind_param('ssssi', $data->id, $list->id, $list->color, $list->name, $list->ordr);
+    $sq->bind_param('ssssi', $data->id, $list->id, $list->ordr, $list->name);
     $sq->execute();
   }
   $sq->close();
@@ -309,12 +309,12 @@ function importTrello($data) { //Import Trello
   usort($data->cards, function($a, $b) {return $a->pos - $b->pos;});
 
   $sqlCards = $scon->prepare('INSERT INTO cards VALUES(?,?,?,?,?,?,null,default,?,?)');
-  $sqlLists = $scon->prepare('INSERT INTO lists(board,id,color,name,ordr) VALUES(?,?,?,?,?)');
+  $sqlLists = $scon->prepare('INSERT INTO lists(board,id,ordr,name) VALUES(?,?,?,?)');
 
   foreach($data->lists as $list) {
     if($list->closed) continue;
     $lid = idGen32();
-    $sqlLists->bind_param('ssssi', $bid, $lid, $list->color, $list->name, $list->pos);
+    $sqlLists->bind_param('sssis', $bid, $lid, $list->pos, $list->name);
     $sqlLists->execute();
 
     $pid = "0";
@@ -323,7 +323,7 @@ function importTrello($data) { //Import Trello
       $cid = idGen32();
 
       $tags = "";
-      foreach($card->labels as $label) {
+      foreach($card->labels as $label) { //tags
         if(empty($label->color)) continue;
         if(str_starts_with($label->color, '#'))
           $tag = substr($label->color, 1);

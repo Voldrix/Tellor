@@ -11,7 +11,7 @@ mysql $database -e "GRANT ALL PRIVILEGES ON ${database}.* TO '${user}'@'${host}'
 
 mysql $database -e "CREATE TABLE `boards`(`id` binary(16) NOT NULL, `name` varchar(127) NOT NULL, `bgimg` varchar(1023) CHARACTER SET ascii COLLATE ascii_bin, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin"
 
-mysql $database -e "CREATE TABLE `lists`(`board` binary(16) NOT NULL, `id` binary(16) NOT NULL, `color` char(6) CHARACTER SET ascii COLLATE ascii_bin, `name` varchar(1023) NOT NULL, `ordr` int(10) unsigned NOT NULL, KEY `listsBoardIdx` (`board`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin"
+mysql $database -e "CREATE TABLE `lists`(`board` binary(16) NOT NULL, `id` binary(16) NOT NULL, `ordr` int(10) unsigned NOT NULL, `name` varchar(1023) NOT NULL, KEY `listsBoardIdx` (`board`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin"
 
 mysql $database -e "CREATE TABLE `cards`(`board` binary(16) NOT NULL, `list` binary(16) NOT NULL, `id` binary(16) NOT NULL, `parent` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, `title` varchar(1023) NOT NULL, `tags` varchar(127) CHARACTER SET ascii COLLATE ascii_bin, `color` char(7) CHARACTER SET ascii COLLATE ascii_bin, `cdate` datetime NOT NULL DEFAULT current_timestamp(), `mdate` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), `description` text, PRIMARY KEY (`board`,`list`,`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin"
 
