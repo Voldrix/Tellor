@@ -62,7 +62,7 @@ function getBoard() { //Get Board (lists + cards)
     http_response_code(404);
     return;
   }
-  $resL = $scon->query('SELECT id,name,ordr,0 as "start",0 as "end" FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
+  $resL = $scon->query('SELECT id,ordr,name,0 as "start",0 as "end" FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
   $resC = $scon->query('SELECT list,id,parent,title,tags,color,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $rowsL = mysqli_fetch_all($resL, MYSQLI_ASSOC);
   $rowsC = mysqli_fetch_all($resC, MYSQLI_ASSOC);
@@ -147,7 +147,7 @@ function newCard() { //Add Card
 function addTag() { //Add Tag
   global $scon;
   $color = $_REQUEST['color'];
-  if(preg_match("/^[a-zA-Z0-9]{3,6}$/", $color)) {
+  if(preg_match("/^[a-zA-Z0-9#]{3,7}$/", $color)) {
     $res = $scon->query('UPDATE cards SET tags=CONCAT_WS(" ", tags, "'.$color.'") WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
     if(!$res) http_response_code(500);
   }
@@ -197,7 +197,6 @@ function deleteList() { //Delete List
 
 function delTag() { //Delete Tag
   global $scon;
-  if($_SERVER['REQUEST_METHOD'] !== 'PUT') {http_response_code(400); return;}
   $color = $_REQUEST['color'];
   $res = $scon->query('SELECT tags FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(empty($res) || mysqli_num_rows($res) != 1) {
@@ -205,7 +204,7 @@ function delTag() { //Delete Tag
     return;
   }
   $tag = mysqli_fetch_array($res)[0];
-  $tag = preg_replace("/\b$color\b\s?/", '', $tag);
+  $tag = preg_replace("/\B$color\b\s?/", '', $tag);
   $tag = trim($tag);
   $tag = empty($tag) ? 'null' : '"'.$tag.'"';
 
@@ -235,6 +234,7 @@ function archiveCard() { //Archive Card
 function deleteBoard() { //Delete Board
   global $scon;
   if($_SERVER['REQUEST_METHOD'] !== 'PUT') {http_response_code(400); return;}
+  $scon->query('INSERT INTO archive SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $scon->query('DELETE FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $scon->query('DELETE FROM lists WHERE board="'.$_REQUEST['bid'].'"');
   $res = $scon->query('DELETE FROM boards WHERE id="'.$_REQUEST['bid'].'"');
@@ -299,7 +299,7 @@ function importTellor($data) { //Import Tellor
 
 function importTrello($data) { //Import Trello
   global $scon;
-  $colorCodes = array("black" => "000000", "silver" => "C0C0C0", "gray" => "808080", "white" => "FFFFFF", "maroon" => "800000", "red" => "FF0000", "purple" => "800080", "fuchsia" => "FF00FF", "green" => "008000", "lime" => "00FF00", "olive" => "808000", "yellow" => "FFFF00", "navy" => "000080", "blue" => "0000FF", "teal" => "008080", "aqua" => "00FFFF");
+  $colorCodes = array("black" => "#000", "silver" => "#BBB", "gray" => "#888", "white" => "#FFF", "maroon" => "#900", "red" => "#F00", "purple" => "#808", "fuchsia" => "#F0F", "green" => "#080", "lime" => "#0F0", "olive" => "#880", "yellow" => "#FF0", "navy" => "#008", "blue" => "#00F", "teal" => "#088", "aqua" => "#0FF");
 
   $bid = idGen32();
   $boardName = str_replace(['\\','"','<','\n'], '', $data->name);

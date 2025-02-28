@@ -3,6 +3,17 @@ __Minimalist single-user (no auth) kanban todo app__
 
 [Live Demo](https://voldrixia.com/tellor/?b=18486f63be6bb5f2)
 
+__Breaking Change__ 2025-02-28\
+Tags now store hex codes in DB. Apply this fix for pre-existing installs\
+MariaDB:\
+```
+update cards set tags=REGEXP_REPLACE(tags,'\\b([[:xdigit:]]+)\\b','#\\1') where tags is not null;
+```
+MySQL:\
+```
+update cards set tags=REGEXP_REPLACE(tags,'\\b([[:xdigit:]]+)\\b','#$1') where tags is not null;
+```
+
 ## Features
 - Loads fast. Lightweight. Snappy controls
 - Clean and Compact UI

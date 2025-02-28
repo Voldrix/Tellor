@@ -1,5 +1,5 @@
 var boardsJSON, currentBoard, tags, lists, activeCard, listMax, defaultTextColor = '#f0f0f0';
-var tagPalette = ['900', 'F80', 'DD0', '090', '0DD', '00B', '80F', 'F08', 'E0E', 'F8F', '000', 'FFF', '888'];
+var tagPalette = ['#900', '#F80', '#DD0', '#090', '#0DD', '#00B', '#80F', '#F08', '#E0E', '#F8F', '#000', '#FFF', '#888'];
 
 const getCookie = (cookie) => (document.cookie.match('(^|;)\\s*'+cookie+'\\s*=\\s*([^;]+)')?.pop()||'');
 function setCookie(cookie, value, del=false) {
@@ -291,7 +291,7 @@ function render(cards) {
       if(_tags &&_tags != 0 && _tags[0] != '') {
         for(tagColor of _tags) {
           let colorTag = document.createElement('div');
-          colorTag.style.background = '#'+tagColor;
+          colorTag.style.background = tagColor;
           colorTag.setAttribute('color', tagColor);
           tagsDiv.appendChild(colorTag);
         }
@@ -399,7 +399,7 @@ function viewCard(cardID) {
   if(_tags && _tags != 0) {
     for(tagColor of _tags) {
       var newTag = document.createElement('div');
-      newTag.style.background = '#'+tagColor;
+      newTag.style.background = tagColor;
       newTag.setAttribute('onclick', "delTag(this,'"+tagColor+"')");
       addTagBtn.insertAdjacentElement('beforebegin', newTag);
     }
@@ -522,19 +522,19 @@ function addTag(color) {
   xhttp.onloadend = function() {
     if(this.status === 200) {
       var newTag = document.createElement('div'); //view card details tag
-      newTag.style.background = '#'+color;
+      newTag.style.background = color;
       newTag.setAttribute('onclick', "delTag(this,'"+color+"')");
       addTagBtn.insertAdjacentElement('beforebegin', newTag);
 
-      newTag = document.createElement('div'); //card color tag
-      newTag.style.background = '#'+color;
+      newTag = document.createElement('div'); //card tag
+      newTag.style.background = color;
       newTag.setAttribute('color', color);
       document.getElementById('tags' + activeCard.id).appendChild(newTag);
 
       addTagBox.style.height = 0;
     }
   }
-  xhttp.open('GET', 'api.php?api=addTag&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&color=' + color, true);
+  xhttp.open('GET', 'api.php?api=addTag&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&color=' + encodeURIComponent(color), true);
   xhttp.send();
 }
 
@@ -555,7 +555,7 @@ function delTag(elem, color) {
     }
     else alert('Error: ' + this.status);
   }
-  xhttp.open('PUT', 'api.php?api=delTag&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&color=' + color, true);
+  xhttp.open('GET', 'api.php?api=delTag&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&color=' + encodeURIComponent(color), true);
   xhttp.send();
 }
 
@@ -692,7 +692,7 @@ const rgb2hex = (rgb) => '#' + rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/).sli
 function populateTagColors() {
   for(color of tagPalette) {
     let colorTag = document.createElement('div');
-    colorTag.style.background = '#'+color;
+    colorTag.style.background = color;
     colorTag.setAttribute('onclick', "addTag('"+color+"')");
     addTagBox.appendChild(colorTag);
   }
