@@ -5,7 +5,8 @@ if(empty($_REQUEST['api'])) {
 }
 $scon = new mysqli('localhost', 'telloruser', 'tellorpasswd', 'tellordb');
 $scon->set_charset('utf8mb4');
-header("Cache-Control: no-store");
+header("content-type: application/json");
+header("cache-control: no-store");
 
 switch ($_REQUEST['api']) {
   case 'getBoards': getBoards(); break;
@@ -256,8 +257,7 @@ function export() { //Export Board
   $data->lists = $rowsL;
   $data->cards = $rowsC;
 
-  header('Content-Type: application/octet-stream');
-  header('Content-Disposition: attachment; filename="tellor_'.$data->id.'.json"');
+  header('content-disposition: attachment; filename="tellor_'.$data->id.'.json"');
   echo json_encode($data);
 }
 

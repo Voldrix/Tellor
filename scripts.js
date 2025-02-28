@@ -29,11 +29,13 @@ populateTagColors();
 //POP STATE
 window.onkeyup = (e) => {if(e.key === 'Escape') {closeCard();}};
 window.onpopstate = function(event) {
-  route('home');
-  if(event.state)
-    changeBoard(event.state, true);
+  if(event.state && !activeCard) {
+    route('home');
+    if(event.state !== boardID)
+      changeBoard(event.state, true);
+  }
   else
-    document.title = 'Tellor';
+    closeCard();
 };
 
 
@@ -83,6 +85,8 @@ function route(_route) {
     cardDescTA.style.display = 'none';
     cardDescDiv.style.display = 'block';
     addTagBox.style.height = 0;
+    if(history.state)
+      history.pushState(null, '', '');
   }
 }
 
@@ -100,7 +104,7 @@ function getBoards() {
         boardsSelect.appendChild(option);
         let menuBtn = document.createElement("a"); //side menu button
         menuBtn.href = "?b=" + b.id;
-        menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+b.id+"')");
+        menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+b.id+"',false)");
         menuBtn.textContent = b.name;
         boards.appendChild(menuBtn);
       }
@@ -138,12 +142,12 @@ function newBoard() {
       boardsSelect.appendChild(option);
       let menuBtn = document.createElement("a"); //side menu button
       menuBtn.href = "?b=" + this.responseText;
-      menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+this.responseText+"')");
+      menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+this.responseText+"',false)");
       menuBtn.textContent = bname;
       boards.appendChild(menuBtn);
       boardsJSON.push({id:this.responseText, name:bname, bgImg:imgurl});
       route('home');
-      changeBoard(this.responseText);
+      changeBoard(this.responseText, false);
     }
     else alert('Error: ' + this.status);
   }
@@ -181,7 +185,7 @@ function editBoard() {
 
 
 //CHANGE BOARD
-function changeBoard(bid, popState=false) {
+function changeBoard(bid, popState) {
   if(!bid) return;
 
   var xhttp = new XMLHttpRequest();
@@ -194,7 +198,9 @@ function changeBoard(bid, popState=false) {
       lists = board.lists;
       render(board.cards);
       setCookie('bid', bid, false);
-      if(!popState)
+      if(!history.state) //init load. set history.state
+        history.replaceState(bid, '', '?b=' + bid);
+      if(!popState) //nav via menu, not history
         history.pushState(bid, '', '?b=' + bid);
       delete board.cards;
     }
