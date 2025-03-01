@@ -105,7 +105,7 @@ function addList() { //Add List
   global $scon;
   $lid = idGen32();
 
-  $sq = $scon->prepare('INSERT INTO lists(board,id,color,name,ordr) VALUES("'.$_REQUEST['bid'].'","'.$lid.'",null,?,'.$_REQUEST['pos'].')');
+  $sq = $scon->prepare('INSERT INTO lists(board,id,ordr,name) VALUES("'.$_REQUEST['bid'].'","'.$lid.'",'.$_REQUEST['pos'].',?)');
   $sq->bind_param('s', $_REQUEST['name']);
   $sq->execute();
   $sq->close();
