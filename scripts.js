@@ -19,8 +19,8 @@ var menuState = getCookie('menuState') || 'open';
 getBoards();
 if(boardID)
   changeBoard(boardID, true);
-if(menuState !== 'open' && window.innerWidth > 1000)
-  toggleMenu();
+if(menuState === 'closed' && window.innerWidth > 1000)
+  toggleMenu('close');
 if(getCookie('orientation'))
   scrollOrientation();
 populateTagColors();
@@ -203,6 +203,8 @@ function changeBoard(bid, popState) {
       if(!popState) //nav via menu, not history
         history.pushState(bid, '', '?b=' + bid);
       delete board.cards;
+      if(window.innerWidth < 1000) //close menu on mobile
+        toggleMenu('open'); //mobile menu state is reversed. so to be closed by default
     }
     else {
       boardID = currentBoard = main.style.backgroundImage = null;
@@ -486,7 +488,8 @@ function cancelCard() {
 //PARSE DESCRIPTION
 function parseDescription() {
   var parsedDesc = cardDescTA.value.replaceAll('<', '&lt;'); //html -> text
-  parsedDesc = parsedDesc.replace(/(https?:\/\/[^\s)]+)/g, '<a href="$1" target=_blank>$1</a>'); //links -> html
+  parsedDesc = parsedDesc.replace(/\[([^\]]+)\]\((http[^)]+)\)/g, '<a href="$2" target=_blank>$1</a>'); //md links -> html
+  parsedDesc = parsedDesc.replace(/(?<!=")(https?:\/\/[^\s)]+)/g, '<a href="$1" target=_blank>$1</a>'); //links -> html
   cardDescDiv.innerHTML = parsedDesc;
 }
 
@@ -706,9 +709,11 @@ function showTags() {
 
 
 //Toggle Menu
-function toggleMenu() {
-  document.body.classList.toggle('menu-closed');
-  if(document.body.classList.contains('menu-closed') && window.innerWidth > 1000)
+function toggleMenu(forced=false) {
+  if(forced === 'close') document.body.classList.add('menu-closed');
+  else if(forced === 'open') document.body.classList.remove('menu-closed');
+  else document.body.classList.toggle('menu-closed');
+  if(document.body.classList.contains('menu-closed') && window.innerWidth > 1000) //don't set cookie on mobile. Disallows mobile menu being open by default
     setCookie('menuState', 'closed', false);
   else
     setCookie('menuState', '', true);

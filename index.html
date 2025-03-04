@@ -2,6 +2,7 @@
 <html lang=en><head><meta charset=utf-8>
 <link rel=stylesheet href=style.css>
 <meta name=referrer content=no-referrer>
+<meta name=theme-color content="#175CA2">
 <meta name=viewport content="width=device-width">
 <title>Tellor</title>
 <script defer src=scripts.js></script>
@@ -83,7 +84,6 @@
   Description<br>
   <div id=cardDescDiv class=cardDescription onclick=editDescription(event)></div>
   <textarea id=cardDescTA class=cardDescription autocorrect=off spellcheck=false maxlength=1023 oninput="this.style.height=0;this.style.height=this.scrollHeight+2+'px'" onblur=doneEditDescription()></textarea>
-
   <div>
     <div class=saveDescriptionBtns>
       <button id=sav onclick=saveCard()>Save</button>

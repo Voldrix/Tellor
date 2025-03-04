@@ -5,11 +5,11 @@ __Minimalist single-user (no auth) kanban todo app__
 
 __Breaking Change__ 2025-02-28\
 Tags now store hex codes in DB. Apply this fix for pre-existing installs\
-MariaDB:\
+MariaDB:
 ```
 update cards set tags=REGEXP_REPLACE(tags,'\\b([[:xdigit:]]+)\\b','#\\1') where tags is not null;
 ```
-MySQL:\
+MySQL:
 ```
 update cards set tags=REGEXP_REPLACE(tags,'\\b([[:xdigit:]]+)\\b','#$1') where tags is not null;
 ```
