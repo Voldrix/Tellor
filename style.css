@@ -4,15 +4,15 @@ body {font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);backgroun
 div,span,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
 button,select {cursor:pointer;}
 a {color:var(--accent);text-decoration:none;}
-h1 {display:inline;font-size:28px;line-height:28px;margin:0;vertical-align:top;}
-h2 {display:block;color:var(--text);font-size:16px;line-height:20px;font-weight:bold;margin:0;padding:6px 8px;text-align:center;}
+h1 {display:inline-block;font-size:28px;line-height:32px;font-weight:bold;margin:0;vertical-align:top;}
+h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text-align:center;color:var(--text);padding:6px 8px;}
 
 /* HEAD */
-.head {color:var(--title);background-color:var(--menu-bg);border-bottom:1px solid var(--menu-border);}
-.menuBtn {background:none;padding:4px 10px 3px 10px;}
-.menuBtn:hover {transform:scale(1.2);}
+.head {height:34px;color:var(--title);background-color:var(--menu-bg);border-bottom:1px solid var(--menu-border);}
+.menuBtn {background:none;padding:5px 10px;line-height:0;vertical-align:top;}
+.menuBtn:hover {transform:scale(1.25);}
 .menuBtn svg {height:24px;width:24px;stroke:var(--title);}
-.head select {vertical-align:super;margin-left:12px;color:var(--text);background-color:#0003;padding:4px 8px;border-left:2px solid #33f;border-right:2px solid #b33;border-radius:24px;}
+.head select {margin:5px 10px 0 12px;color:var(--text);background-color:#202226;padding:4px 8px;border-left:2px solid #33f;border-right:2px solid #b33;border-radius:24px;vertical-align:top;}
 .head select:hover {border-color:var(--accent);}
 .orientationBtn {float:right;padding:0 8px;background:none;}
 .orientationBtn svg {display:block;stroke:var(--title);height:34px;width:34px;}
