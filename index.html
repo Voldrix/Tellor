@@ -77,7 +77,7 @@
 <!-- View Card Details -->
 <div class=viewCardBox id=viewCardBox>
   <div class=cardTitle maxlength=1023 id=cardTitle contenteditable=true autocorrect=off spellcheck=false onblur=saveCard()></div>
-  <div>Tags<input type=color id=cardTextColorPicker value="#f0f0f0" onchange=cardColor() oncontextmenu="event.preventDefault();cardColor('default')"><br>
+  <div>Tags<input type=color id=cardTextColorPicker value="#f0f0f0" onchange=cardColor() oncontextmenu="event.preventDefault();cardColor('default')" title="Card text color. Right click for default"><br>
     <div id=tagsBox><button id=addTagBtn onclick=showTags()>+</button></div>
     <div id=addTagBox></div>
   </div>

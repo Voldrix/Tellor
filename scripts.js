@@ -57,6 +57,8 @@ function route(_route) {
   delBoardBtn.style.display = 'none';
   delChk.checked = false;
 
+  if(_route === 'home')
+    return;
   if(_route === 'newBoard') {
     popupBG.style.display = 'flex';
     newBoardBox.style.display = 'block';
@@ -85,9 +87,9 @@ function route(_route) {
     cardDescTA.style.display = 'none';
     cardDescDiv.style.display = 'block';
     addTagBox.style.height = 0;
-    if(history.state)
-      history.pushState(null, '', '');
   }
+  if(history.state)
+    history.pushState(null, '', '');
 }
 
 
@@ -202,9 +204,9 @@ function changeBoard(bid, popState) {
         history.replaceState(bid, '', '?b=' + bid);
       if(!popState) //nav via menu, not history
         history.pushState(bid, '', '?b=' + bid);
-      delete board.cards;
       if(window.innerWidth < 1000) //close menu on mobile
         toggleMenu('open'); //mobile menu state is reversed. so to be closed by default
+      delete board.cards;
     }
     else {
       boardID = currentBoard = main.style.backgroundImage = null;
