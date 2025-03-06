@@ -93,6 +93,9 @@ h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text
 #addTagBox {display:flex;flex-flow:row nowrap;height:0;margin-bottom:12px;}
 #addTagBox div {flex:1 1 7.69%;cursor:pointer;transform:skewX(135deg);}
 #cardTextColorPicker {float:right;height:13px;width:32px;cursor:pointer;transform:skewX(45deg);}
+#cardTextColorPicker::-webkit-color-swatch-wrapper {padding:0;}
+#cardTextColorPicker::-webkit-color-swatch {border:none;}
+#cardTextColorPicker::-moz-color-swatch {border:none;}
 #tagsBox div:hover, #tagsBox button:hover, #addTagBox div:hover, #cardTextColorPicker:hover {z-index:1;scale:1.25;}
 
 /* MISC */
