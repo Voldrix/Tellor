@@ -1,7 +1,7 @@
 # Tellor
 __Minimalist single-user (no auth) kanban todo app__
 
-[Live Demo](https://voldrixia.com/tellor/?b=18486f63be6bb5f2)
+[Live Demo](https://tellor.cc/demo/?b=18486f63be6bb5f2)
 
 __Breaking Change__ 2025-02-28\
 Tags now store hex codes in DB. Apply this fix for pre-existing installs\
