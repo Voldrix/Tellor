@@ -76,10 +76,10 @@ function getBoard() { //Get Board (lists + cards)
 function newBoard() { //New Board
   global $scon;
   $bid = idGen32();
-  $name = $_REQUEST['name'];
+  $bgimg = $_REQUEST['imgurl'] ?: null;
 
   $sq = $scon->prepare('INSERT INTO boards(id,name,bgimg) VALUES(?,?,?)');
-  $sq->bind_param('sss', $bid, $name, $_REQUEST['imgurl']);
+  $sq->bind_param('sss', $bid, $_REQUEST['name'], $bgimg);
   $sq->execute();
   $sq->close();
 
@@ -174,12 +174,12 @@ function moveCard() { //Move Card
     http_response_code(400);
     return;
   }
-  //set src pid to dpid
+  //set src pid to dest pid
   $scon->query('UPDATE cards SET parent="'.$_REQUEST['dpid'].'",list="'.$_REQUEST['dlid'].'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['stid'].'" LIMIT 1');
   //set dest pid to src id
   if($_REQUEST['dtid'] != '0')
     $scon->query('UPDATE cards SET parent="'.$_REQUEST['stid'].'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['dtid'].'" LIMIT 1');
-  //set void pid to spid
+  //set void pid to src pid
   if($_REQUEST['vtid'] != '0')
     $scon->query('UPDATE cards SET parent="'.$_REQUEST['spid'].'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['vtid'].'" LIMIT 1');
 }

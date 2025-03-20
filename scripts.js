@@ -147,7 +147,7 @@ function newBoard() {
       menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+this.responseText+"',false)");
       menuBtn.textContent = bname;
       boards.appendChild(menuBtn);
-      boardsJSON.push({id:this.responseText, name:bname, bgImg:imgurl});
+      boardsJSON.push({id:this.responseText, name:bname, bgimg:imgurl});
       route('home');
       changeBoard(this.responseText, false);
     }

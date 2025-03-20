@@ -48,7 +48,7 @@ h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text
 .cardContainer {padding:0 8px;min-height:12px;margin:-6px 0;overflow-y:auto;scrollbar-width:thin;}
 .card {background-color:#22272B;border-radius:7px;margin:6px 0;padding:0 8px 6px 8px;box-sizing:border-box;white-space:pre-wrap;cursor:pointer;}
 .addCardBtn {border-radius:7px;margin:4px 8px 0 8px;padding:1px 6px;cursor:pointer;}
-.card:hover, .addCardBtn:hover {background-color:#2a2e32;}
+.card:hover, .addCardBtn:hover {background-color:#282e34;}
 .hasDescription {border-left:4px solid var(--accent);}
 
 /* POPUPS */

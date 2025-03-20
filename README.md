@@ -3,16 +3,7 @@ __Minimalist single-user (no auth) kanban todo app__
 
 [Live Demo](https://tellor.cc/demo/?b=18486f63be6bb5f2)
 
-__Breaking Change__ 2025-02-28\
-Tags now store hex codes in DB. Apply this fix for pre-existing installs\
-MariaDB:
-```
-update cards set tags=REGEXP_REPLACE(tags,'\\b([[:xdigit:]]+)\\b','#\\1') where tags is not null;
-```
-MySQL:
-```
-update cards set tags=REGEXP_REPLACE(tags,'\\b([[:xdigit:]]+)\\b','#$1') where tags is not null;
-```
+A Trello clone with a cleaner, simplified, and compact UI. Core essential features only, so no UI bloat. Can import boards from Trello.
 
 ## Features
 - Loads fast. Lightweight. Snappy controls
