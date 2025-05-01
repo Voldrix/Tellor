@@ -682,10 +682,15 @@ function archiveCard() {
     if(this.status === 200) {
       card.remove();
     }
-    else viewCard(card.id);
+    else {
+      card.style.display = null;
+      viewCard(card.id);
+    }
   }
   xhttp.open('GET', 'api.php?api=archiveCard&bid=' + boardID + '&listid=' + activeCard.list + '&cardid=' + activeCard.id + '&pid=' + pid, true);
   xhttp.send();
+
+  card.style.display = 'none';
   route('home');
 }
 

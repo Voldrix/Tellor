@@ -84,6 +84,7 @@ h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text
 #can:hover {background:#383c40;}
 #archiveBtn {float:right;padding:3px 8px;margin:10px 0 2px 8px;background:none;border:2px solid #911;color:#911;border-radius:7px;}
 #archiveBtn:hover {background:#911;color:#000;border-color:#000;}
+.cardDescription a:hover {text-decoration:underline;color:#2369B0;}
 
 /* TAGS */
 .tags {padding:2px 4px;line-height:0;pointer-events:none;}
