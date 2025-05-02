@@ -63,7 +63,7 @@ function getBoard() { //Get Board (lists + cards)
     return;
   }
   $resL = $scon->query('SELECT id,ordr,name,0 as "start",0 as "end" FROM lists WHERE board="'.$_REQUEST['bid'].'" ORDER BY ordr asc');
-  $resC = $scon->query('SELECT list,id,parent,title,tags,color,cdate,mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
+  $resC = $scon->query('SELECT list,id,parent,title,tags,color,IF(description IS NULL,null,1) AS description FROM cards WHERE board="'.$_REQUEST['bid'].'"');
   $rowsL = mysqli_fetch_all($resL, MYSQLI_ASSOC);
   $rowsC = mysqli_fetch_all($resC, MYSQLI_ASSOC);
   $res = new stdClass();
