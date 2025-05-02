@@ -74,6 +74,8 @@ h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text
 .cardTitle {display:block;font-size:16px;line-height:22px;margin-bottom:10px;padding:4px 4px 6px 4px;border-radius:7px;background:none;}
 .cardTitle:focus {background-color:#1a1e22;outline:1px solid var(--accent);}
 .cardDescription {display:none;font-family:monospace;line-height:16px;min-height:130px;width:100%;padding:4px;color:var(--text);background:#343a3f;overflow-y:auto;border:1px solid #21272c;overflow-wrap:break-word;box-sizing:border-box;white-space:pre-wrap;}
+.dates {float:right;color:#888;font-size:12px;}
+#cdate, #mdate {font-size:inherit;}
 .saveDescriptionBtns {display:none;}
 #cardDescTA:focus {outline:2px solid var(--accent);}
 #cardDescTA:focus + div .saveDescriptionBtns, .saveDescriptionBtns:hover {display:inline-block;}

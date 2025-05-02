@@ -46,7 +46,7 @@ function getBoards() { //Get Boards
 
 function getCard() { //Get Card
   global $scon;
-  $res = $scon->query('SELECT * FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
+  $res = $scon->query('SELECT DATE(cdate) AS cdate,DATE(mdate) AS mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
   if(!empty($res) && mysqli_num_rows($res) == 1) {
     $row = mysqli_fetch_assoc($res);
     echo json_encode($row);
