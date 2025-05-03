@@ -81,7 +81,7 @@
     <div id=tagsBox><button id=addTagBtn onclick=showTags()>+</button></div>
     <div id=addTagBox></div>
   </div>
-  <div>Description<span class=dates>C: (<span id=cdate></span>) M: (<span id=mdate></span>)</span></div>
+  <div>Description<span class=dates><span id=cdate title="Created Date" style="margin-right:12px;"></span><span id=mdate title="Modified Date"></span></span></div>
   <div id=cardDescDiv class=cardDescription onclick=editDescription(event)></div>
   <textarea id=cardDescTA class=cardDescription autocorrect=off spellcheck=false oninput="this.style.height=0;this.style.height=this.scrollHeight+2+'px'" onblur=doneEditDescription()></textarea>
   <div>

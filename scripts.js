@@ -443,7 +443,7 @@ function saveCard() {
       if(activeCard) {
         activeCard.title = title;
         activeCard.description = cardDescTA.value;
-        mdate.textContent = new Date().toLocaleDateString("sv");
+        mdate.textContent = new Date().toLocaleDateString("en-gb", {day: 'numeric', month: 'short', year: 'numeric'});
       }
     }
   }
