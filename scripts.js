@@ -465,6 +465,8 @@ function saveCard() {
 function editDescription(event) { //onClick
   if(event.target.nodeName == 'A') //enable link click w/o starting edit
     return;
+  if(window.getSelection().anchorOffset - window.getSelection().focusOffset) //allow highlight description w/o starting edit
+    return;
   cardDescDiv.style.display = 'none';
   cardDescTA.style.display = 'block';
   cardDescTA.style.height = 0;
