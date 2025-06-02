@@ -420,8 +420,10 @@ function viewCard(cardID) {
     }
   }
 
-  xhttp.open('GET', 'api.php?api=getCard&bid=' + boardID + '&listid=' + listID + '&cardid=' + cardID, true);
-  xhttp.send();
+  if(cardID !== 'new') {
+    xhttp.open('GET', 'api.php?api=getCard&bid=' + boardID + '&listid=' + listID + '&cardid=' + cardID, true);
+    xhttp.send();
+  }
   activeCard = {id: cardID, title: card.textContent, color: color, list: listID, description: ''};
 }
 
