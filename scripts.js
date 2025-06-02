@@ -292,7 +292,7 @@ function render(cards) {
       tagsDiv.id = 'tags' + card.id;
       tagsDiv.classList.add('tags');
       let _tags = card.tags?.split(' '); //color tags
-      if(_tags &&_tags != 0 && _tags[0] != '') {
+      if(_tags && _tags != 0 && _tags[0] != '') {
         for(tagColor of _tags) {
           let colorTag = document.createElement('div');
           colorTag.style.background = tagColor;
@@ -393,7 +393,7 @@ function viewCard(cardID) {
   route('viewCard');
 
   var card = document.getElementById(cardID);
-  cardTitle.innerText = card.textContent; //get title from card tile
+  cardTitle.textContent = card.textContent; //get title from card tile
   cardDescTA.value = cardDescDiv.innerHTML = cdate.textContent = mdate.textContent = ''; //clear description
   var listID = card.parentElement.id.substring(2);
   var color = card.style.color ? rgb2hex(card.style.color) : defaultTextColor; //card text color
@@ -430,9 +430,9 @@ function viewCard(cardID) {
 function saveCard() {
   if(!activeCard) return;
   var card = document.getElementById(activeCard.id);
-  var title = cardTitle.innerText.trim();
+  var title = cardTitle.textContent.trim();
   if(!title) { //revert empty title
-    cardTitle.innerText = activeCard.title;
+    cardTitle.textContent = activeCard.title;
     return;
   }
 

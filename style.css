@@ -1,6 +1,7 @@
 :root {--main-bg:#383C43; --menu-bg:#282B2F; --menu-border:#000; --title:#A0ADBB; --text:#F0F0F0; --accent:#175CA2;}
 
 body {font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);background-color:var(--main-bg);font-size:14px;line-height:18px;text-align:left;margin:0;padding:0;}
+pre {font-family:"Segoe UI",Tahoma,Arial,sans-serif;}
 div,span,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
 button,select {cursor:pointer;}
 a {color:var(--accent);text-decoration:none;}
@@ -71,7 +72,7 @@ h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text
 
 /* VIEW CARD DETAILS */
 .viewCardBox {display:none;flex-flow:column nowrap;width:768px;max-width:90vw;max-height:97vh;padding:6px 12px;background-color:#282E33;border-radius:9px;}
-.cardTitle {display:block;font-size:16px;line-height:22px;margin-bottom:10px;padding:4px 4px 6px 4px;border-radius:7px;background:none;}
+.cardTitle {font-size:16px;line-height:22px;margin:0 0 10px 0;padding:4px 4px 6px 4px;border-radius:7px;}
 .cardTitle:focus {background-color:#1a1e22;outline:1px solid var(--accent);}
 .cardDescription {display:none;font-family:monospace;line-height:16px;min-height:130px;width:100%;padding:4px;color:var(--text);background:#343a3f;overflow-y:auto;border:1px solid #21272c;overflow-wrap:break-word;box-sizing:border-box;white-space:pre-wrap;}
 .dates {float:right;color:#888;font-size:12px;}
