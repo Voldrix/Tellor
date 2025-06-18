@@ -432,7 +432,7 @@ function viewCard(cardID) {
 function saveCard() {
   if(!activeCard) return;
   var card = document.getElementById(activeCard.id);
-  var title = cardTitle.textContent.trim();
+  var title = cardTitle.innerText.trim();
   if(!title) { //revert empty title
     cardTitle.textContent = activeCard.title;
     return;
