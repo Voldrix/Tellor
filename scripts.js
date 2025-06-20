@@ -273,7 +273,8 @@ function render(cards) {
     let newList = document.createElement('div');
     newList.classList.add('list');
     newList.setAttribute('ondrop', "dragDrop(event)");
-    newList.innerHTML = `<div class=listTitle id=${l.id} ordr=${l.ordr}><div class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${l.name}</div><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${l.id}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${l.id}')>+ Add Card</div>`;
+    newList.setAttribute('ondragleave', "dragLeaveList(event)");
+    newList.innerHTML = `<div class=listTitle id=${l.id} ordr=${l.ordr}><pre class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${l.name}</pre><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${l.id}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${l.id}')>+ Add Card</div>`;
     main.appendChild(newList);
 
     let cardsContainer = document.getElementById('cc' + l.id);
@@ -326,7 +327,8 @@ function addList() {
       let newList = document.createElement('div');
       newList.classList.add('list');
       newList.setAttribute('ondrop', "dragDrop(event)");
-      newList.innerHTML = `<div class=listTitle id=${this.responseText} ordr=${listMax}><div class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${lname}</div><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${this.responseText}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${this.responseText}')>+ Add Card</div>`;
+      newList.setAttribute('ondragleave', "dragLeaveList(event)");
+      newList.innerHTML = `<div class=listTitle id=${this.responseText} ordr=${listMax}><pre class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${lname}</pre><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${this.responseText}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${this.responseText}')>+ Add Card</div>`;
       newListColumn.insertAdjacentElement('beforeBegin', newList);
       newListName.value = null;
       main.scrollLeft = main.scrollWidth;
@@ -807,6 +809,10 @@ function dragOver(e) {
   e.preventDefault();
   dragster.style.top = (e.pageY - offsetY - 6) + 'px';
   dragster.style.left = (e.pageX - offsetX) + 'px';
+}
+function dragLeaveList(e) {
+  if(e.relatedTarget.id === 'main')
+    spacer.remove();
 }
 
 

@@ -2,7 +2,7 @@
 
 body {font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);background-color:var(--main-bg);font-size:14px;line-height:18px;text-align:left;margin:0;padding:0;}
 pre {font-family:"Segoe UI",Tahoma,Arial,sans-serif;}
-div,span,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
+div,span,pre,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
 button,select {cursor:pointer;}
 a {color:var(--accent);text-decoration:none;}
 h1 {display:inline-block;font-size:28px;line-height:32px;font-weight:bold;margin:0;vertical-align:top;}
