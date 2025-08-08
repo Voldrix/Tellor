@@ -5,22 +5,22 @@ pre {font-family:"Segoe UI",Tahoma,Arial,sans-serif;}
 div,span,pre,input,select,button,textarea {border:none;margin:0;padding:0;font-size:14px;}
 button,select {cursor:pointer;}
 a {color:var(--accent);text-decoration:none;}
-h1 {display:inline-block;font-size:28px;line-height:32px;font-weight:bold;margin:0;vertical-align:top;}
+h1 {display:inline-block;font-size:26px;line-height:30px;font-weight:bold;margin:0;vertical-align:top;}
 h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text-align:center;color:var(--text);padding:6px 8px;}
 
 /* HEAD */
-.head {height:34px;color:var(--title);background-color:var(--menu-bg);border-bottom:1px solid var(--menu-border);}
-.menuBtn {background:none;padding:5px 10px;line-height:0;vertical-align:top;}
+.head {height:32px;color:var(--title);background-color:var(--menu-bg);border-bottom:1px solid var(--menu-border);}
+.menuBtn {background:none;padding:6px 10px;line-height:0;vertical-align:top;}
 .menuBtn:hover {transform:scale(1.25);}
-.menuBtn svg {height:24px;width:24px;stroke:var(--title);}
-.head select {margin:5px 10px 0 12px;color:var(--text);background-color:#202226;padding:4px 8px;border-left:2px solid #33f;border-right:2px solid #b33;border-radius:24px;vertical-align:top;}
+.menuBtn svg {height:20px;width:20px;stroke:var(--title);}
+.head select {margin:5px 10px 0 12px;color:var(--text);background-color:#202226;padding:3px 8px;border-left:2px solid #33f;border-right:2px solid #b33;border-radius:18px;vertical-align:top;}
 .head select:hover {border-color:var(--accent);}
 .orientationBtn {float:right;padding:0 8px;background:none;}
-.orientationBtn svg {display:block;stroke:var(--title);height:34px;width:34px;}
+.orientationBtn svg {display:block;stroke:var(--title);height:32px;width:32px;}
 .orientationBtn:hover svg {stroke:var(--accent);}
 
 /* MENU */
-.menu {position:fixed;width:220px;padding-top:7px;overflow-y:auto;top:34px;bottom:0;left:0;word-break:break-all;text-align:center;z-index:1;background-color:var(--menu-bg);border-right:1px solid var(--menu-border);scrollbar-color:#0000 #0000 !important;transition:left ease .5s,scrollbar-color linear .5s;}
+.menu {position:fixed;width:220px;padding-top:7px;overflow-y:auto;top:32px;bottom:0;left:0;word-break:break-all;text-align:center;z-index:1;background-color:var(--menu-bg);border-right:1px solid var(--menu-border);scrollbar-color:#0000 #0000 !important;transition:left ease .5s,scrollbar-color linear .5s;}
 .menu button {width:78%;color:#999;line-height:19px;padding:4px;background-color:#222426;margin:4px 0;border-radius:12px;border-left:2px solid black;border-right:2px solid black;}
 .menu button:hover {background-color:#1E2022;border-color:var(--accent);}
 .menu a {display:block;color:#A0A0A0;padding:3px 4px 5px 4px;margin:8px;border-radius:14px;border-top:1px solid #515151;border-bottom:1px solid #000;}
@@ -28,7 +28,7 @@ h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text
 .menu a.activeBoard {color:var(--accent);background:none;border-left:2px solid var(--accent);border-right:2px solid var(--accent);}
 
 /* MAIN CARDS */
-.main {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;position:absolute;top:35px;left:220px;right:0;bottom:0;padding:10px;background-size:cover;background-position:center;box-sizing:border-box;overflow-y:hidden;overflow-x:auto;scrollbar-width:thin;transition:left ease .5s;}
+.main {display:flex;flex-flow:row nowrap;justify-content:start;align-items:start;position:absolute;top:33px;left:220px;right:0;bottom:0;padding:10px;background-size:cover;background-position:center;box-sizing:border-box;overflow-y:hidden;overflow-x:auto;scrollbar-width:thin;transition:left ease .5s;}
 .main.vertical {flex-wrap:wrap;row-gap:10px;overflow-y:auto;overflow-x:hidden;}
 .dragster {position:absolute;pointer-events:none;contain:content;}
 /* lists */
