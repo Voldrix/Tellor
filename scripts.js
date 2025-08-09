@@ -773,7 +773,8 @@ function importBoard() {
 
 //DRAG DROP
 var offsetX, offsetY, draggedCard, dragster, spacer = document.createElement('div');
-spacer.style.margin = '6px 0';
+spacer.style.margin = '6px 0px 0px 0px';
+
 
 function dragStart(e) {
   draggedCard = e.target;
