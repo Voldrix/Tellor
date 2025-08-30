@@ -333,6 +333,7 @@ function addList() {
       newListName.value = null;
       main.scrollLeft = main.scrollWidth;
     }
+    if(this.status === 409) outOfSyncWarn();
   }
   xhttp.open('GET', 'api.php?api=addList&bid=' + boardID + '&name=' + encodeURIComponent(lname) + '&pos=' + (listMax + 1), true);
   xhttp.send();
@@ -367,7 +368,10 @@ function newCard(listID) {
       newCardTags.id = 'tags' + this.responseText; //real id
       newCard.setAttribute('onclick', "viewCard('"+this.responseText+"')");
     }
-    else newCard.remove();
+    else {
+      newCard.remove();
+      if(this.status === 409) outOfSyncWarn();
+    }
   }
 
   xhttp.open('GET', 'api.php?api=newCard&bid=' + boardID + '&listid=' + listID + '&pid=' + pid  + '&title=' + encodeURIComponent(_cardTitle), true);
@@ -629,6 +633,7 @@ function moveList(listTitle, direction) {
       swapDir = (direction !== 'right') ? 'beforebegin' : 'afterend';
       listContainer.insertAdjacentElement(swapDir, swap);
     }
+    if(this.status === 409) outOfSyncWarn();
   }
   xhttp.open('GET', 'api.php?api=moveList&bid=' + boardID + '&lid1=' + listTitle.id + '&lid2=' + swapTitle.id + '&ordr1='  + listOrdr + '&ordr2=' + swapOrdr, true);
   xhttp.send();
@@ -720,6 +725,14 @@ function showTags() {
 }
 
 
+//Out of Sync Warn
+function outOfSyncWarn() {
+  if(confirm("Page is Out of Sync.\nClick OK to Refresh Page")) {
+    location.reload();
+  }
+}
+
+
 //Toggle Menu
 function toggleMenu(forced=false) {
   if(forced === 'close') document.body.classList.add('menu-closed');
@@ -779,6 +792,7 @@ spacer.style.margin = '6px 0px 0px 0px';
 function dragStart(e) {
   draggedCard = e.target;
   dragster = draggedCard.cloneNode(true);
+  dragster.id = '';
   dragster.classList.add('dragster');
   document.body.appendChild(dragster);
   dragster.style.width = e.target.getBoundingClientRect().width  + 'px';
@@ -787,8 +801,10 @@ function dragStart(e) {
   offsetY = e.pageY - e.target.getBoundingClientRect().y;
   dragster.style.top = (e.pageY - offsetY - 6) + 'px';
   dragster.style.left = (e.pageX - offsetX) + 'px';
-  draggedCard.insertAdjacentElement('beforebegin', spacer);
-  draggedCard.style.display = 'none';
+  setTimeout(()=>{ //chrome "bug" wontFix
+    draggedCard.insertAdjacentElement('beforebegin', spacer);
+    draggedCard.style.display = 'none';
+  },0);
 }
 function dragEnd(e) {
   spacer.remove();
@@ -826,6 +842,7 @@ function dragDrop(e) {
   var stid = draggedCard.id;
   var dtid = dropTarget ? dropTarget.id : '0';
   var slist = draggedCard.parentElement;
+  var slid = slist.id.substr(2);
   var voidTile = draggedCard.nextElementSibling;
   var vtid = voidTile ? voidTile.id : '0';
   dragEnd(e);
@@ -855,8 +872,9 @@ function dragDrop(e) {
       else if(spid !== '0') document.getElementById(spid).insertAdjacentElement('afterend', draggedCard);
       else slist.appendChild(draggedCard);
     }
+    if(this.status === 409) outOfSyncWarn();
   }
-  xhttp.open('GET', 'api.php?api=moveCard&bid=' + boardID + '&stid=' + stid + '&dtid=' + dtid + '&spid=' + spid + '&dpid=' + dpid + '&dlid=' + dlid + '&vtid=' + vtid, true);
+  xhttp.open('GET', 'api.php?api=moveCard&bid=' + boardID + '&stid=' + stid + '&dtid=' + dtid + '&spid=' + spid + '&dpid=' + dpid + '&slid=' + slid + '&dlid=' + dlid + '&vtid=' + vtid, true);
   xhttp.send();
 }
 

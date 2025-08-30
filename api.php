@@ -47,7 +47,7 @@ function getBoards() { //Get Boards
 function getCard() { //Get Card
   global $scon;
   $res = $scon->query('SELECT date_format(cdate,"%e %b %Y") AS cdate,date_format(mdate,"%e %b %Y") AS mdate,description FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
-  if(!empty($res) && mysqli_num_rows($res) == 1) {
+  if(!empty($res) && mysqli_num_rows($res) === 1) {
     $row = mysqli_fetch_assoc($res);
     echo json_encode($row);
   }
@@ -104,6 +104,9 @@ function editBoard() { //Edit Board
 function addList() { //Add List
   global $scon;
   $lid = idGen32();
+  //idempotency check
+  $res = $scon->query('SELECT 1 FROM lists WHERE board="'.$_REQUEST['bid'].'" AND ordr >= '.$_REQUEST['pos'].' LIMIT 1');
+  if(mysqli_num_rows($res) !== 0) {http_response_code(409); return;}
 
   $sq = $scon->prepare('INSERT INTO lists(board,id,ordr,name) VALUES("'.$_REQUEST['bid'].'","'.$lid.'",'.$_REQUEST['pos'].',?)');
   $sq->bind_param('s', $_REQUEST['name']);
@@ -128,6 +131,12 @@ function renameList() { //Rename List
 
 function moveList() { //Move List
   global $scon;
+  //idempotency check
+  $res = $scon->query('SELECT 1 FROM lists WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['lid1'].'" AND ordr='.$_REQUEST['ordr1'].' LIMIT 1');
+  if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+  $res = $scon->query('SELECT 1 FROM lists WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['lid2'].'" AND ordr='.$_REQUEST['ordr2'].' LIMIT 1');
+  if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+
   $res = $scon->query('UPDATE lists SET ordr="'.$_REQUEST['ordr2'].'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['lid1'].'" LIMIT 1');
   $res = $scon->query('UPDATE lists SET ordr="'.$_REQUEST['ordr1'].'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['lid2'].'" LIMIT 1');
   if(!$res)
@@ -138,6 +147,19 @@ function moveList() { //Move List
 function newCard() { //Add Card
   global $scon;
   $cardid = idGen32();
+  //idempotency check
+  if($_REQUEST['pid'] === '0') { //only card in list
+    $res = $scon->query('SELECT 1 FROM lists WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['listid'].'" LIMIT 1');
+    if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+    $res = $scon->query('SELECT 1 FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" LIMIT 1');
+    if(mysqli_num_rows($res) !== 0) {http_response_code(409); return;}
+  }
+  else { 
+    $res = $scon->query('SELECT 1 FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['pid'].'" LIMIT 1');
+    if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+    $res = $scon->query('SELECT 1 FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND parent="'.$_REQUEST['pid'].'" LIMIT 1');
+    if(mysqli_num_rows($res) !== 0) {http_response_code(409); return;}
+  }
   $res = $scon->query('INSERT INTO cards(board,list,id,parent,title,tags,description) VALUES("'.$_REQUEST['bid'].'","'.$_REQUEST['listid'].'","'.$cardid.'","'.$_REQUEST['pid'].'","'.$_REQUEST['title'].'",null,null)');
   if($res) echo $cardid;
   else http_response_code(500);
@@ -170,17 +192,48 @@ function saveCard() { //Save Card
 
 function moveCard() { //Move Card
   global $scon;
-  if($_REQUEST['stid'] == $_REQUEST['dpid'] || $_REQUEST['stid'] == $_REQUEST['dtid']) {
+  if($_REQUEST['stid'] === $_REQUEST['dpid'] || $_REQUEST['stid'] === $_REQUEST['dtid']) {
     http_response_code(400);
     return;
   }
+  //idempotency check
+  //source
+  $res = $scon->query('SELECT parent FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['slid'].'" AND id="'.$_REQUEST['stid'].'" LIMIT 1');
+  if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+  $parent = mysqli_fetch_array($res)[0];
+  if($parent !== $_REQUEST['spid']) {http_response_code(409); return;}
+  //void
+  $res = $scon->query('SELECT parent FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['slid'].'" AND id="'.$_REQUEST['vtid'].'" LIMIT 1');
+  if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+  $parent = mysqli_fetch_array($res)[0];
+  //dest
+  if($parent !== $_REQUEST['stid']) {http_response_code(409); return;}
+  if($_REQUEST['dtid'] === '0') { //dest last in list
+    if($_REQUEST['dpid'] !== '0') {
+      $res = $scon->query('SELECT 1 FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['dlid'].'" AND id="'.$_REQUEST['dpid'].'" LIMIT 1');
+      if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+      $res = $scon->query('SELECT 1 FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['dlid'].'" AND parent="'.$_REQUEST['dpid'].'" LIMIT 1');
+      if(mysqli_num_rows($res) !== 0) {http_response_code(409); return;}
+    }
+    else { //dest only in list
+      $res = $scon->query('SELECT 1 FROM lists WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['dlid'].'" LIMIT 1');
+      if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+    }
+  }
+  else { //dest not last in list
+    $res = $scon->query('SELECT parent FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['dlid'].'" AND id="'.$_REQUEST['dtid'].'" LIMIT 1');
+    if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+    $parent = mysqli_fetch_array($res)[0];
+    if($parent !== $_REQUEST['dpid']) {http_response_code(409); return;}
+  }
+
   //set src pid to dest pid
   $scon->query('UPDATE cards SET parent="'.$_REQUEST['dpid'].'",list="'.$_REQUEST['dlid'].'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['stid'].'" LIMIT 1');
   //set dest pid to src id
-  if($_REQUEST['dtid'] != '0')
+  if($_REQUEST['dtid'] !== '0')
     $scon->query('UPDATE cards SET parent="'.$_REQUEST['stid'].'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['dtid'].'" LIMIT 1');
   //set void pid to src pid
-  if($_REQUEST['vtid'] != '0')
+  if($_REQUEST['vtid'] !== '0')
     $scon->query('UPDATE cards SET parent="'.$_REQUEST['spid'].'" WHERE board="'.$_REQUEST['bid'].'" AND id="'.$_REQUEST['vtid'].'" LIMIT 1');
 }
 
@@ -199,7 +252,7 @@ function delTag() { //Delete Tag
   global $scon;
   $color = $_REQUEST['color'];
   $res = $scon->query('SELECT tags FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['listid'].'" AND id="'.$_REQUEST['cardid'].'" LIMIT 1');
-  if(empty($res) || mysqli_num_rows($res) != 1) {
+  if(empty($res) || mysqli_num_rows($res) !== 1) {
     http_response_code(404);
     return;
   }
@@ -245,7 +298,7 @@ function deleteBoard() { //Delete Board
 function export() { //Export Board
   global $scon;
   $res = $scon->query('SELECT * FROM boards WHERE id="'.$_REQUEST['bid'].'"');
-  if(empty($res) || mysqli_num_rows($res) != 1) {
+  if(empty($res) || mysqli_num_rows($res) !== 1) {
     http_response_code(404);
     return;
   }

@@ -79,7 +79,7 @@ h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text
 #cdate, #mdate {font-size:inherit;}
 .saveDescriptionBtns {display:none;}
 #cardDescTA:focus {outline:2px solid var(--accent);}
-#cardDescTA:focus + div .saveDescriptionBtns, .saveDescriptionBtns:hover {display:inline-block;}
+#cardDescTA:focus + div .saveDescriptionBtns {display:inline-block;}
 .saveDescriptionBtns {margin-top:6px;}
 #sav {color:var(--accent);font-size:16px;line-height:18px;padding:5px 10px;margin-right:8px;border:2px solid var(--accent);border-radius:7px;background:none;}
 #sav:hover {color:#000;background:var(--accent);}
@@ -111,6 +111,9 @@ body.menu-closed .main {left:0;}
 @media (max-width:1000px) {
   .menu {left:-222px;}
   .main, body.menu-closed .menu {left:0;}
+}
+@media (min-width:500px) {
+  .saveDescriptionBtns:hover {display:inline-block;}
 }
 
 ::selection {color:var(--accent);background-color:#000;}
