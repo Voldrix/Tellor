@@ -203,11 +203,17 @@ function moveCard() { //Move Card
   $parent = mysqli_fetch_array($res)[0];
   if($parent !== $_REQUEST['spid']) {http_response_code(409); return;}
   //void
-  $res = $scon->query('SELECT parent FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['slid'].'" AND id="'.$_REQUEST['vtid'].'" LIMIT 1');
-  if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
-  $parent = mysqli_fetch_array($res)[0];
+  if($_REQUEST['vtid'] !== '0') { //src not last in list
+    $res = $scon->query('SELECT parent FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['slid'].'" AND id="'.$_REQUEST['vtid'].'" LIMIT 1');
+    if(mysqli_num_rows($res) !== 1) {http_response_code(409); return;}
+    $parent = mysqli_fetch_array($res)[0];
+    if($parent !== $_REQUEST['stid']) {http_response_code(409); return;}
+  }
+  else { //src is last in list
+    $res = $scon->query('SELECT 1 FROM cards WHERE board="'.$_REQUEST['bid'].'" AND parent="'.$_REQUEST['stid'].'" LIMIT 1');
+    if(mysqli_num_rows($res) !== 0) {http_response_code(409); return;}
+  }
   //dest
-  if($parent !== $_REQUEST['stid']) {http_response_code(409); return;}
   if($_REQUEST['dtid'] === '0') { //dest last in list
     if($_REQUEST['dpid'] !== '0') {
       $res = $scon->query('SELECT 1 FROM cards WHERE board="'.$_REQUEST['bid'].'" AND list="'.$_REQUEST['dlid'].'" AND id="'.$_REQUEST['dpid'].'" LIMIT 1');
