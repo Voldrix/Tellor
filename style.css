@@ -70,8 +70,8 @@ h2 {display:block;font-size:16px;line-height:20px;font-weight:bold;margin:0;text
 #delChk {accent-color:#911;}
 
 /* VIEW CARD DETAILS */
-.viewCardBox {display:none;flex-flow:column nowrap;width:768px;max-width:90vw;max-height:97vh;padding:6px 12px;background-color:#282E33;border-radius:9px;}
-.cardTitle {font-size:16px;line-height:22px;margin:0 0 10px 0;padding:4px 4px 6px 4px;border-radius:7px;}
+.viewCardBox {display:none;flex-flow:column nowrap;width:768px;max-width:90vw;max-height:97vh;max-height:97dvh;padding:6px 12px;background-color:#282E33;border-radius:9px;}
+.cardTitle {font-size:16px;line-height:22px;margin:0 0 10px 0;padding:4px 4px 6px 4px;white-space:pre-wrap;border-radius:7px;}
 .cardTitle:focus {background-color:#1a1e22;outline:1px solid var(--accent);}
 .cardTitle div {font-size:inherit;}
 .cardDescription {display:none;font-family:monospace;line-height:16px;min-height:130px;width:100%;padding:4px;color:var(--text);background:#343a3f;overflow-y:auto;border:1px solid #21272c;overflow-wrap:break-word;box-sizing:border-box;white-space:pre-wrap;}
@@ -111,6 +111,7 @@ body.menu-closed .main {left:0;}
 @media (max-width:1000px) {
   .menu {left:-222px;}
   .main, body.menu-closed .menu {left:0;}
+  .head select {display:none;}
 }
 @media (min-width:500px) {
   .saveDescriptionBtns:hover {display:inline-block;}

@@ -103,7 +103,7 @@ function getBoards() {
         let option = document.createElement("option"); //select menu option
         option.text = b.name;
         option.value = b.id;
-        boardsSelect.appendChild(option);
+        boardSelect.appendChild(option);
         let menuBtn = document.createElement("a"); //side menu button
         menuBtn.href = "?b=" + b.id;
         menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+b.id+"',false)");
@@ -141,7 +141,7 @@ function newBoard() {
       let option = document.createElement("option"); //select menu option
       option.text = bname;
       option.value = this.responseText;
-      boardsSelect.appendChild(option);
+      boardSelect.appendChild(option);
       let menuBtn = document.createElement("a"); //side menu button
       menuBtn.href = "?b=" + this.responseText;
       menuBtn.setAttribute('onclick', "event.preventDefault();changeBoard('"+this.responseText+"',false)");
@@ -174,7 +174,7 @@ function editBoard() {
       route('home');
       var btn = boards.querySelector('a[href="?b='+boardID+'"'); //side menu button
       if(btn) btn.textContent = bname;
-      btn = boardsSelect.querySelector('option[value="'+boardID+'"'); //select menu option
+      btn = boardSelect.querySelector('option[value="'+boardID+'"'); //select menu option
       if(btn) btn.textContent = bname;
       document.title = bname + ' | Tellor';
       main.style.backgroundImage = imgurl ? 'url(' + imgurl + ')' : null;
@@ -224,7 +224,7 @@ function changeBoard(bid, popState) {
 
 //Set Active Board Btn
 function setActiveBoardBtn() {
-  boardsSelect.value = boardID || '';
+  boardSelect.value = boardID || '';
   var menuBtns = boards.querySelectorAll('a');
   for(e of menuBtns) {
     if(e.search === '?b=' + boardID)
@@ -261,7 +261,7 @@ function render(cards) {
       clID = cards[i].list;
       if(currentList)
         currentList.end = i;
-      currentList = lists.find(e => e.id === clID);
+      currentList = lists.find(e => e.id === clID); //pointer
       currentList.start = clStart;
     }
   }
