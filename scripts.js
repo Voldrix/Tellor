@@ -309,7 +309,7 @@ function render(cards) {
     }
   }
 
-  main.innerHTML += `<div class=newListContainer id=newListColumn>Add List<br><input type=text maxlength=1023 id=newListName placeholder="New List Name" onkeyup="if(event.key === 'Enter') addList()"><br><button id=newListBtn onclick=addList()>Add List</button></div>`;
+  main.insertAdjacentHTML('beforeend', `<div class=newListContainer id=newListColumn>Add List<br><input type=text maxlength=1023 id=newListName placeholder="New List Name" onkeyup="if(event.key === 'Enter') addList()"><br><button id=newListBtn onclick=addList()>Add List</button></div>`);
 }
 
 
