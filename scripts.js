@@ -21,9 +21,6 @@ if(boardID)
   changeBoard(boardID, true);
 if(menuState === 'closed' && window.innerWidth > 1000)
   toggleMenu('close');
-var orientation = getCookie('orientation');
-if(orientation)
-  scrollOrientation('set');
 populateTagColors();
 
 
@@ -198,6 +195,7 @@ function changeBoard(bid, popState) {
       boardID = bid;
       if(boardsJSON) //skip only if getBoards has not loaded yet (race cond)
         currentBoard = boardsJSON.find(e => e.id === bid);
+      scrollOrientation('set');
       lists = board.lists;
       render(board.cards);
       setCookie('bid', bid, false);
@@ -755,7 +753,9 @@ function toggleMenu(forced=false) {
 
 //Scroll Orientation
 function scrollOrientation(rotate) {
-  orientation = (+orientation + (rotate == 'change')) % 3;
+  var orientation = +localStorage.getItem(boardID);
+  orientation = (orientation + (rotate == 'change')) % 3;
+
   main.classList.remove('multiRow');
   main.classList.remove('columns');
   orientationSvg.style.transform = 'none';
@@ -769,7 +769,10 @@ function scrollOrientation(rotate) {
     orientationSvg.style.transform = 'rotate(135deg)';
   }
 
-  setCookie('orientation', orientation, !orientation);
+  if(orientation)
+    localStorage.setItem(boardID, orientation);
+  else
+    localStorage.removeItem(boardID);
 }
 
 
