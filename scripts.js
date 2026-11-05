@@ -21,8 +21,9 @@ if(boardID)
   changeBoard(boardID, true);
 if(menuState === 'closed' && window.innerWidth > 1000)
   toggleMenu('close');
-if(getCookie('orientation'))
-  scrollOrientation();
+var orientation = getCookie('orientation');
+if(orientation)
+  scrollOrientation('set');
 populateTagColors();
 
 
@@ -499,8 +500,15 @@ function cancelCard() {
 //PARSE DESCRIPTION
 function parseDescription() {
   var parsedDesc = cardDescTA.value.replaceAll('<', '&lt;'); //html -> text
-  parsedDesc = parsedDesc.replace(/\[([^\]]+)\]\((http[^)]+)\)/g, '<a href="$2" target=_blank>$1</a>'); //md links -> html
-  parsedDesc = parsedDesc.replace(/(?<!=")(https?:\/\/[^\s)]+)/g, '<a href="$1" target=_blank>$1</a>'); //links -> html
+
+  var linkRegex = /(?<markdown>(?<!!)\[(?<label>[^\]]+)\]\((?<mdUrl>https?:\/\/[^\s)]+)\))|(?<rawUrl>https?:\/\/[^\s<>"'()[\]]+)/g;
+  parsedDesc = parsedDesc.replace(linkRegex, (...args) => {
+    var groups = args.at(-1);
+    if(groups.markdown)
+      return `<a href="${groups.mdUrl}" target=_blank>${groups.label}</a>`;
+    return `<a href="${groups.rawUrl}" target=_blank>${groups.rawUrl}</a>`;
+  });
+
   cardDescDiv.innerHTML = parsedDesc;
 }
 
@@ -746,11 +754,22 @@ function toggleMenu(forced=false) {
 
 
 //Scroll Orientation
-function scrollOrientation() {
-  main.classList.toggle('vertical');
-  var vertical = main.classList.contains('vertical');
-  orientationSvg.style.transform = vertical ? 'rotate(90deg)' : 'none';
-  setCookie('orientation', 'vertical', !vertical);
+function scrollOrientation(rotate) {
+  orientation = (+orientation + (rotate == 'change')) % 3;
+  main.classList.remove('multiRow');
+  main.classList.remove('columns');
+  orientationSvg.style.transform = 'none';
+
+  if(orientation === 1) {
+    main.classList.add('multiRow');
+    orientationSvg.style.transform = 'rotate(90deg)';
+  }
+  if(orientation === 2) {
+    main.classList.add('columns');
+    orientationSvg.style.transform = 'rotate(135deg)';
+  }
+
+  setCookie('orientation', orientation, !orientation);
 }
 
 
