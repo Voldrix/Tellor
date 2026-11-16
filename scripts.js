@@ -1,4 +1,4 @@
-var boardsJSON, currentBoard, tags, lists, activeCard, listMax, defaultTextColor = '#f0f0f0';
+var boardsJSON, currentBoard, tags, lists, activeCard, listMax, orientation, defaultTextColor = '#f0f0f0';
 var tagPalette = ['#900', '#F80', '#DD0', '#090', '#0DD', '#00B', '#80F', '#F08', '#E0E', '#F8F', '#000', '#FFF', '#888'];
 
 const getCookie = (cookie) => (document.cookie.match('(^|;)\\s*'+cookie+'\\s*=\\s*([^;]+)')?.pop()||'');
@@ -272,7 +272,8 @@ function render(cards) {
     let newList = document.createElement('div');
     newList.classList.add('list');
     newList.setAttribute('ondrop', "dragDrop(event)");
-    newList.setAttribute('ondragleave', "dragLeaveList(event)");
+    newList.setAttribute('ondragleave', "dragLeaveList(event,this)");
+    newList.setAttribute('ondragenter', "lockListSize(this)");
     newList.innerHTML = `<div class=listTitle id=${l.id} ordr=${l.ordr}><pre class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${l.name}</pre><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${l.id}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${l.id}')>+ Add Card</div>`;
     main.appendChild(newList);
 
@@ -326,7 +327,8 @@ function addList() {
       let newList = document.createElement('div');
       newList.classList.add('list');
       newList.setAttribute('ondrop', "dragDrop(event)");
-      newList.setAttribute('ondragleave', "dragLeaveList(event)");
+      newList.setAttribute('ondragleave', "dragLeaveList(event,this)");
+      newList.setAttribute('ondragenter', "lockListSize(this)");
       newList.innerHTML = `<div class=listTitle id=${this.responseText} ordr=${listMax}><pre class=listName contenteditable=true autocorrect=off spellcheck=false onblur=renameList(this)>${lname}</pre><button class=moveListBtn onclick=moveList(this.parentElement,'left')>&lt;</button><button class=moveListBtn onclick=moveList(this.parentElement,'right')>&gt;</button><button class=deleteListBtn onclick=deleteList(this.parentElement)>X</button></div><div class=cardContainer id=cc${this.responseText}></div><div class=addCardBtn ondragenter=dragOverNewCardBtn(event) onclick=newCard('${this.responseText}')>+ Add Card</div>`;
       newListColumn.insertAdjacentElement('beforeBegin', newList);
       newListName.value = null;
@@ -753,8 +755,8 @@ function toggleMenu(forced=false) {
 
 //Scroll Orientation
 function scrollOrientation(rotate) {
-  var orientation = +localStorage.getItem(boardID);
-  orientation = (orientation + (rotate == 'change')) % 3;
+  orientation = +localStorage.getItem(boardID);
+  orientation = (orientation + (rotate === 'change')) % 3;
 
   main.classList.remove('multiRow');
   main.classList.remove('columns');
@@ -849,9 +851,18 @@ function dragOver(e) {
   dragster.style.top = (e.pageY - offsetY - 6) + 'px';
   dragster.style.left = (e.pageX - offsetX) + 'px';
 }
-function dragLeaveList(e) {
-  if(e.relatedTarget.id === 'main')
+function dragLeaveList(e, _list) {
+  if(!_list.contains(e.relatedTarget)) {
     spacer.remove();
+    _list.style.height = null;
+  }
+}
+function lockListSize(_list) {
+  if(orientation === 2) {
+    if(main.clientHeight - _list.getBoundingClientRect().bottom - dragster.clientHeight < -16) {
+      _list.style.height = _list.clientHeight + 'px';
+    }
+  }
 }
 
 
@@ -868,6 +879,7 @@ function dragDrop(e) {
   var voidTile = draggedCard.nextElementSibling;
   var vtid = voidTile ? voidTile.id : '0';
   dragEnd(e);
+  slist.parentElement.style.height = null;
   if(draggedCard === dropTarget)
     return;
   var spid = draggedCard.previousElementSibling ? draggedCard.previousElementSibling.id : '0';
